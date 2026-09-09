@@ -12,6 +12,17 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          supabase: ["@supabase/supabase-js"],
+        },
+      },
+    },
+  },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
