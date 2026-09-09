@@ -110,13 +110,15 @@ export default function Navbar() {
       )}
 
       <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-8">
-        {/* Brand Logo - Inverted/White on Landing page, standard on other pages */}
+        {/* Brand Logo - Neon Sign */}
         <Link to="/" className="flex items-center gap-2 shrink-0 group">
-          <img
-            src={isLanding ? "/logo-white-transparent.png" : "/logo-transparent.png"}
-            alt="Ash Vapor"
-            className="h-14 sm:h-16 md:h-18 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
-          />
+          <div className={!isLanding ? "bg-black/95 px-2.5 py-1 rounded-xl shadow-sm border border-zinc-800 flex items-center" : "flex items-center"}>
+            <img
+              src="/logo-neon.png"
+              alt="Ash Vapor"
+              className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            />
+          </div>
         </Link>
 
         {/* Desktop Navigation Links */}

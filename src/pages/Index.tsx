@@ -105,12 +105,12 @@ export default function Index() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/40 via-black to-black pointer-events-none" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-7">
-          {/* Main Brand Logo - Big, Centered & Prominent */}
-          <div className="flex justify-center mb-2">
+          {/* Main Brand Logo - New Neon Sign Logo */}
+          <div className="flex justify-center mb-3">
             <img
-              src="/logo-white-transparent.png"
+              src="/logo-neon.png"
               alt="Ash Vapers"
-              className="h-44 sm:h-56 md:h-64 lg:h-72 w-auto object-contain drop-shadow-[0_15px_45px_rgba(250,204,21,0.25)] transition-transform duration-500 hover:scale-105"
+              className="h-52 sm:h-64 md:h-72 lg:h-80 w-auto object-contain drop-shadow-[0_15px_50px_rgba(250,204,21,0.3)] transition-transform duration-500 hover:scale-105"
             />
           </div>
 
@@ -405,9 +405,9 @@ export default function Index() {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <img
-                  src="/logo-white-transparent.png"
+                  src="/logo-neon.png"
                   alt="Ash Vapers"
-                  className="h-12 w-auto object-contain"
+                  className="h-14 w-auto object-contain"
                 />
               </div>
               <p className="text-xs text-zinc-400 leading-relaxed">
@@ -447,9 +447,9 @@ export default function Index() {
               <h4 className="text-xs font-black uppercase tracking-widest text-white mb-4">Authenticity</h4>
               <div className="flex items-center gap-3">
                 <img
-                  src="/logo-white-badge.png"
+                  src="/logo-neon.png"
                   alt="Ash Vapers Seal"
-                  className="h-14 w-14 object-contain shrink-0"
+                  className="h-16 w-16 object-contain shrink-0"
                 />
                 <div className="space-y-1">
                   <div className="flex items-center gap-1 text-xs font-bold text-emerald-400">
