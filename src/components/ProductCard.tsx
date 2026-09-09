@@ -1,4 +1,4 @@
-import { ShoppingCart, Zap, Check } from "lucide-react";
+import { ShoppingCart, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
@@ -12,9 +12,10 @@ interface ProductCardProps {
   image_url?: string | null;
   stock: number;
   categories?: { name: string } | null;
+  dark?: boolean;
 }
 
-export default function ProductCard({ id, name, price, sku, image_url, stock, categories }: ProductCardProps) {
+export default function ProductCard({ id, name, price, sku, image_url, stock, categories, dark = false }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -29,6 +30,105 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
     navigate("/checkout");
   };
 
+  if (dark) {
+    return (
+      <div
+        className="group card-hover rounded-xl border border-zinc-800 bg-zinc-900/90 overflow-hidden shadow-md hover:shadow-2xl hover:border-red-600/80 cursor-pointer flex flex-col justify-between transition-all duration-300"
+        onClick={() => navigate(`/product/${id}`)}
+      >
+        <div className="aspect-square overflow-hidden bg-black relative border-b border-zinc-800/80 flex items-center justify-center p-4">
+          {image_url ? (
+            <img
+              src={image_url}
+              alt={name}
+              className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-zinc-600 font-semibold text-xs">
+              No Image
+            </div>
+          )}
+
+          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
+            {categories?.name && (
+              <span className="bg-zinc-800/95 text-[10px] font-bold text-white px-2 py-0.5 rounded shadow-sm border border-zinc-700">
+                {categories.name}
+              </span>
+            )}
+            {stock <= 3 && stock > 0 && (
+              <span className="bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-sm">
+                Only {stock} left!
+              </span>
+            )}
+          </div>
+
+          <div className="absolute top-2.5 right-2.5">
+            <span className="bg-emerald-950/60 text-emerald-400 text-[9px] font-extrabold px-2 py-0.5 rounded border border-emerald-800/60 flex items-center gap-0.5">
+              <Check className="h-2.5 w-2.5" /> Authentic
+            </span>
+          </div>
+        </div>
+
+        <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+          <div>
+            <h3 className="font-bold text-white line-clamp-2 text-xs sm:text-sm group-hover:text-red-400 transition-colors leading-snug">
+              {name}
+            </h3>
+            <p className="text-[10px] text-zinc-500 font-mono mt-1 font-semibold">SKU: {sku}</p>
+          </div>
+
+          <div className="pt-1">
+            <div className="flex items-baseline justify-between mb-3">
+              <div>
+                <span className="text-xs font-bold text-zinc-400 mr-1">PKR</span>
+                <span className="text-base sm:text-lg font-black text-white">
+                  {price.toLocaleString()}
+                </span>
+              </div>
+              {stock > 0 ? (
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800/50">
+                  In Stock
+                </span>
+              ) : (
+                <span className="text-[10px] font-bold text-red-400 bg-red-950/40 px-2 py-0.5 rounded border border-red-800/50">
+                  Sold Out
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-1.5 pt-1">
+              <Button
+                className="flex-1 bg-red-600 hover:bg-red-500 text-white text-xs h-9 font-bold rounded shadow-sm transition-all"
+                size="sm"
+                disabled={stock <= 0}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAdd();
+                }}
+              >
+                <ShoppingCart className="h-3.5 w-3.5 mr-1" /> Add
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 text-xs h-9 bg-white hover:bg-zinc-200 text-black border-white font-bold rounded shadow-sm transition-all"
+                size="sm"
+                disabled={stock <= 0}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleBuyNow();
+                }}
+              >
+                Buy Now
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Light theme (used everywhere else)
   return (
     <div
       className="group card-hover rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm hover:shadow-md hover:border-red-600 cursor-pointer flex flex-col justify-between transition-all duration-200"
@@ -48,7 +148,6 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
           </div>
         )}
 
-        {/* Badges on image */}
         <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
           {categories?.name && (
             <span className="bg-white/95 text-[10px] font-bold text-black px-2 py-0.5 rounded shadow-sm border border-gray-200">

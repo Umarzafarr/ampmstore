@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ShoppingBag, User, LogOut, Search, ChevronDown, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
@@ -17,7 +17,10 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  const isLanding = location.pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -80,63 +83,97 @@ export default function Navbar() {
   const count = itemCount();
 
   return (
-    <nav className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100" : "bg-white border-b border-gray-100"}`}>
-      {/* Top Black Announcement Bar (Matching VapeMall) */}
-      <div className="bg-black text-white py-2 px-4 text-center text-xs sm:text-sm font-medium">
-        <a
-          href="https://wa.me/923104703131"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1.5 hover:underline transition-all text-white"
-        >
-          <span>Order Online or Call or WhatsApp Us at 03104703131</span>
-          <span className="font-bold text-sm">→</span>
-        </a>
-      </div>
+    <nav
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isLanding
+          ? scrolled
+            ? "bg-black/95 backdrop-blur-md shadow-2xl border-b border-white/10 text-white"
+            : "bg-black/90 backdrop-blur-sm border-b border-white/10 text-white"
+          : scrolled
+          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 text-black"
+          : "bg-white border-b border-gray-100 text-black"
+      }`}
+    >
+      {/* Top Announcement Bar - Omitted on landing page to maintain clean, clutter-free luxury look */}
+      {!isLanding && (
+        <div className="bg-black text-white py-2 px-4 text-center text-xs sm:text-sm font-medium">
+          <a
+            href="https://wa.me/923104703131"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 hover:underline transition-all text-white"
+          >
+            <span>Order Online or Call or WhatsApp Us at 03104703131</span>
+            <span className="font-bold text-sm">→</span>
+          </a>
+        </div>
+      )}
 
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6">
-        {/* Brand Logo - Left Aligned */}
+      <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-8">
+        {/* Brand Logo - Inverted/White on Landing page, standard on other pages */}
         <Link to="/" className="flex items-center gap-2 shrink-0 group">
           <img
-            src="/logo-transparent.png"
+            src={isLanding ? "/logo-white-transparent.png" : "/logo-transparent.png"}
             alt="Ash Vapor"
             className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
           />
         </Link>
 
-        {/* Desktop Navigation Links with Dropdown Carets */}
-        <div className="hidden lg:flex items-center gap-7">
-          <Link to="/products" className="text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+        {/* Desktop Navigation Links */}
+        <div className="hidden lg:flex items-center gap-8">
+          <Link
+            to="/products"
+            className={`text-xs font-bold tracking-widest uppercase transition-colors ${
+              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+            }`}
+          >
             New Arrivals
           </Link>
-          <Link to="/products?cat=E-Liquids" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+          <Link
+            to="/products?cat=E-Liquids"
+            className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
+              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+            }`}
+          >
             <span>E-Liquids</span>
-            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+            <ChevronDown className={`h-3.5 w-3.5 ${isLanding ? "text-white/50" : "text-gray-500"}`} />
           </Link>
-          <Link to="/products?cat=Pods" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+          <Link
+            to="/products?cat=Pods"
+            className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
+              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+            }`}
+          >
             <span>Vapes</span>
-            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+            <ChevronDown className={`h-3.5 w-3.5 ${isLanding ? "text-white/50" : "text-gray-500"}`} />
           </Link>
-          <Link to="/products?cat=Disposable+Vapes" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+          <Link
+            to="/products?cat=Disposable+Vapes"
+            className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
+              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+            }`}
+          >
             <span>Disposables</span>
-            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+            <ChevronDown className={`h-3.5 w-3.5 ${isLanding ? "text-white/50" : "text-gray-500"}`} />
           </Link>
-          <Link to="/products" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
-            <span>Accessories</span>
-            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
-          </Link>
-          <Link to="/orders" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
-            <span>Locations</span>
-            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+          <Link
+            to="/orders"
+            className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
+              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+            }`}
+          >
+            <span>Track Order</span>
           </Link>
         </div>
 
         {/* Right Action Icons: Search, User, Cart Bag */}
-        <div className="flex items-center gap-4 sm:gap-5">
+        <div className="flex items-center gap-5">
           {/* Search icon button */}
           <button
             onClick={() => setSearchOpen(!searchOpen)}
-            className="text-black hover:text-[#F8BE67] transition-colors p-1"
+            className={`p-1 transition-colors ${
+              isLanding ? "text-white/90 hover:text-red-500" : "text-black hover:text-red-600"
+            }`}
             title="Search products"
           >
             <Search className="h-5 w-5" />
@@ -146,7 +183,9 @@ export default function Navbar() {
           {user ? (
             <button
               onClick={handleLogout}
-              className="text-black hover:text-red-600 transition-colors p-1"
+              className={`p-1 transition-colors ${
+                isLanding ? "text-white/90 hover:text-red-500" : "text-black hover:text-red-600"
+              }`}
               title="Sign Out"
             >
               <LogOut className="h-5 w-5" />
@@ -154,22 +193,26 @@ export default function Navbar() {
           ) : (
             <Link
               to="/auth"
-              className="text-black hover:text-[#F8BE67] transition-colors p-1"
+              className={`p-1 transition-colors ${
+                isLanding ? "text-white/90 hover:text-red-500" : "text-black hover:text-red-600"
+              }`}
               title="Account"
             >
               <User className="h-5 w-5" />
             </Link>
           )}
 
-          {/* Shopping Bag with black circular badge */}
+          {/* Shopping Bag with circular badge */}
           <button
             onClick={toggleCart}
-            className="relative p-1 text-black hover:text-[#F8BE67] transition-colors"
+            className={`relative p-1 transition-colors ${
+              isLanding ? "text-white/90 hover:text-red-500" : "text-black hover:text-red-600"
+            }`}
             title="Cart"
           >
             <ShoppingBag className="h-6 w-6" />
             {count > 0 && (
-              <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white shadow-sm">
+              <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white shadow-sm">
                 {count}
               </span>
             )}
@@ -177,7 +220,7 @@ export default function Navbar() {
 
           {/* Mobile menu toggle */}
           <button
-            className="lg:hidden p-1 text-black"
+            className={`lg:hidden p-1 ${isLanding ? "text-white" : "text-black"}`}
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -187,7 +230,7 @@ export default function Navbar() {
 
       {/* Expandable Search Input Bar */}
       {searchOpen && (
-        <div className="border-t border-gray-100 bg-gray-50 px-4 py-3 shadow-inner">
+        <div className={`border-t px-4 py-3 shadow-inner ${isLanding ? "border-white/10 bg-zinc-950" : "border-gray-100 bg-gray-50"}`}>
           <form onSubmit={handleSearchSubmit} className="container mx-auto max-w-xl flex gap-2">
             <input
               type="text"
@@ -195,9 +238,13 @@ export default function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               autoFocus
-              className="flex-1 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:border-[#F8BE67]"
+              className={`flex-1 rounded-full px-4 py-2 text-sm focus:outline-none ${
+                isLanding
+                  ? "bg-zinc-900 border border-white/20 text-white placeholder:text-gray-500 focus:border-red-500"
+                  : "bg-white border border-gray-300 text-black focus:border-red-600"
+              }`}
             />
-            <Button type="submit" className="rounded-full bg-black hover:bg-gray-800 text-white text-xs px-5 font-bold">
+            <Button type="submit" className="rounded-full bg-red-600 hover:bg-red-700 text-white text-xs px-5 font-bold">
               Search
             </Button>
           </form>
@@ -206,46 +253,56 @@ export default function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {menuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 px-6 py-5 space-y-3 shadow-lg">
+        <div className={`lg:hidden border-t px-6 py-5 space-y-3 shadow-2xl ${isLanding ? "bg-black border-white/10 text-white" : "bg-white border-gray-100 text-black"}`}>
           <Link
             to="/products"
-            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
+              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+            }`}
             onClick={() => setMenuOpen(false)}
           >
             New Arrivals
           </Link>
           <Link
             to="/products?cat=E-Liquids"
-            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
+              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+            }`}
             onClick={() => setMenuOpen(false)}
           >
             E-Liquids
           </Link>
           <Link
             to="/products?cat=Pods"
-            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
+              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+            }`}
             onClick={() => setMenuOpen(false)}
           >
             Vapes
           </Link>
           <Link
             to="/products?cat=Disposable+Vapes"
-            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
+              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+            }`}
             onClick={() => setMenuOpen(false)}
           >
             Disposables
           </Link>
           <Link
             to="/orders"
-            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
+              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+            }`}
             onClick={() => setMenuOpen(false)}
           >
-            Track Order & Locations
+            Track Order
           </Link>
           {!user && (
             <Link
               to="/auth"
-              className="block text-base font-bold text-[#F8BE67] py-1"
+              className="block text-sm font-bold uppercase tracking-wider text-red-500 py-2"
               onClick={() => setMenuOpen(false)}
             >
               Sign In to Account
