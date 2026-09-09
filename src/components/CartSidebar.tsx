@@ -14,7 +14,7 @@ export default function CartSidebar() {
         <SheetHeader className="pb-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-lg font-black text-black flex items-center gap-2.5">
-              <img src="/logo-transparent.png" alt="Ash Vapor" className="h-7 w-auto object-contain" />
+              <img src="/logo-badge-transparent.png" alt="Ash Vapor" className="h-7 w-auto object-contain" />
               <span>Ash<span className="text-red-600">Vapor</span> Cart</span>
             </SheetTitle>
             <span className="text-xs text-gray-700 font-bold">

@@ -92,10 +92,10 @@ export default function Navbar() {
       </div>
 
       <div className="container mx-auto flex h-16 items-center justify-between px-3 sm:px-4">
-        {/* Brand Logo - Keep user logo, rename store Ash Vapor */}
+        {/* Brand Logo - Ash Vapor */}
         <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
           <img
-            src="/logo-transparent.png"
+            src="/logo-badge-transparent.png"
             alt="Ash Vapor"
             className="h-10 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
           />
