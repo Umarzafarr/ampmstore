@@ -26,7 +26,7 @@ export default function Auth() {
     // Check manager portal admin credentials: admin / admin
     if (isLogin && verifyAdminCredentials(email, password)) {
       setAdminLoggedIn(true);
-      toast({ title: "Manager Authenticated", description: "Logged in as Administrator (am/pm)" });
+      toast({ title: "Manager Authenticated", description: "Logged in as Administrator (Ash Vapor)" });
       setLoading(false);
       navigate("/manager");
       return;
@@ -68,47 +68,43 @@ export default function Auth() {
   };
 
   return (
-    <div className="flex min-h-[85vh] items-center justify-center px-4 py-12 relative overflow-hidden">
-      {/* Vapor glow circles */}
-      <div className="absolute top-1/4 left-1/3 w-80 h-80 rounded-full bg-primary/10 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/3 w-80 h-80 rounded-full bg-accent/10 blur-[100px] pointer-events-none" />
-
-      <div className="w-full max-w-md space-y-6 relative z-10 glass-dark p-8 rounded-2xl border border-border/80 glow-card">
+    <div className="flex min-h-[85vh] items-center justify-center px-4 py-12 bg-white text-black">
+      <div className="w-full max-w-md space-y-6 bg-white p-8 rounded-2xl border border-gray-200 shadow-lg">
         <div className="text-center space-y-3">
           <div className="flex justify-center">
             <img
               src="/logo-transparent.png"
-              alt="am/pm Logo"
-              className="h-20 sm:h-24 w-auto object-contain drop-shadow-[0_0_20px_rgba(139,92,246,0.45)]"
+              alt="Ash Vapor Logo"
+              className="h-20 sm:h-24 w-auto object-contain"
             />
           </div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 border border-primary/30 text-primary text-xs font-semibold">
-            <Flame className="h-3.5 w-3.5" /> 24/7 Vape Pod Lounge
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold">
+            <Flame className="h-3.5 w-3.5" /> Ash Vapor Pakistan
           </div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-black">
             {isLogin ? "Sign In to Your Account" : "Create Customer Account"}
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            {isLogin ? "Access your saved vape orders and exclusive member drops." : "Join am/pm for fastest checkout and pod restock alerts."}
+          <p className="text-xs sm:text-sm text-gray-700 font-medium">
+            {isLogin ? "Access your saved vape orders and track shipments." : "Join Ash Vapor for fastest checkout and stock updates."}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div className="space-y-1.5">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name" className="text-xs font-bold text-black">Full Name</Label>
               <Input
                 id="name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Ahmed Khan"
                 required
-                className="bg-secondary/40 border-border/70"
+                className="bg-white border-gray-300 text-black text-sm"
               />
             </div>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email">Email or Username</Label>
+            <Label htmlFor="email" className="text-xs font-bold text-black">Email or Username</Label>
             <Input
               id="email"
               type="text"
@@ -116,15 +112,15 @@ export default function Auth() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin or customer@email.com"
               required
-              className="bg-secondary/40 border-border/70"
+              className="bg-white border-gray-300 text-black text-sm"
             />
           </div>
           <div className="space-y-1.5">
             <div className="flex justify-between items-center">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-xs font-bold text-black">Password</Label>
               {isLogin && (
-                <span className="text-[11px] text-muted-foreground">
-                  Manager: <code className="text-primary font-bold">admin</code> / <code className="text-primary font-bold">admin</code>
+                <span className="text-[11px] text-gray-600 font-medium">
+                  Manager: <code className="text-red-600 font-bold">admin</code> / <code className="text-red-600 font-bold">admin</code>
                 </span>
               )}
             </div>
@@ -135,25 +131,25 @@ export default function Auth() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="bg-secondary/40 border-border/70"
+              className="bg-white border-gray-300 text-black text-sm"
             />
           </div>
-          <Button type="submit" className="w-full btn-glow h-11 text-base font-semibold" disabled={loading}>
+          <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white h-11 text-base font-bold shadow-sm" disabled={loading}>
             {loading ? "Authenticating..." : isLogin ? "Sign In" : "Create Account"}
           </Button>
         </form>
 
-        <div className="pt-2 text-center text-xs text-muted-foreground space-y-3">
+        <div className="pt-2 text-center text-xs text-gray-700 space-y-3 font-medium">
           <p>
             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-            <button type="button" onClick={() => setIsLogin(!isLogin)} className="text-primary font-semibold hover:underline">
+            <button type="button" onClick={() => setIsLogin(!isLogin)} className="text-red-600 font-bold hover:underline">
               {isLogin ? "Sign Up" : "Sign In"}
             </button>
           </p>
 
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground/80 border-t border-border/50 pt-3">
-            <ShieldCheck className="h-3.5 w-3.5 text-accent" />
-            <span>Strictly 21+ adults only. Verification applied at checkout.</span>
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-600 border-t border-gray-200 pt-3">
+            <ShieldCheck className="h-3.5 w-3.5 text-red-600" />
+            <span>Strictly 21+ adults only. Delivery across all cities of Pakistan.</span>
           </div>
         </div>
       </div>

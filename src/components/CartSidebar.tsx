@@ -1,6 +1,6 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Flame } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useNavigate } from "react-router-dom";
 
@@ -10,14 +10,14 @@ export default function CartSidebar() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setOpen}>
-      <SheetContent className="flex flex-col bg-card/95 backdrop-blur-2xl border-l border-border/80 w-full sm:max-w-md p-6">
-        <SheetHeader className="pb-4 border-b border-border/60">
+      <SheetContent className="flex flex-col bg-white border-l border-gray-200 w-full sm:max-w-md p-6 text-black shadow-2xl">
+        <SheetHeader className="pb-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <SheetTitle className="font-display text-lg font-black text-foreground flex items-center gap-2.5">
-              <img src="/logo-transparent.png" alt="am/pm" className="h-6 w-auto object-contain" />
-              <span>am<span className="text-primary font-light">/</span>pm Vape Cart</span>
+            <SheetTitle className="text-lg font-black text-black flex items-center gap-2.5">
+              <img src="/logo-transparent.png" alt="Ash Vapor" className="h-7 w-auto object-contain" />
+              <span>Ash<span className="text-red-600">Vapor</span> Cart</span>
             </SheetTitle>
-            <span className="text-xs text-muted-foreground font-mono">
+            <span className="text-xs text-gray-700 font-bold">
               {items.length} {items.length === 1 ? "item" : "items"}
             </span>
           </div>
@@ -25,24 +25,24 @@ export default function CartSidebar() {
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center text-center p-6 space-y-4">
-            <div className="h-16 w-16 rounded-2xl bg-secondary/50 border border-border/70 flex items-center justify-center text-muted-foreground">
-              <ShoppingBag className="h-8 w-8 text-primary/60" />
+            <div className="h-16 w-16 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500">
+              <ShoppingBag className="h-8 w-8 text-red-600" />
             </div>
             <div>
-              <p className="text-base font-bold text-foreground">Your Vape Cart is Empty</p>
-              <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-                Explore our selection of premium pod systems, disposables, and nicotine salts.
+              <p className="text-base font-bold text-black">Your Vape Cart is Empty</p>
+              <p className="text-xs text-gray-600 mt-1 max-w-xs font-medium">
+                Explore our selection of genuine pod systems, smart disposables, and nicotine salts.
               </p>
             </div>
             <Button
               size="sm"
-              className="btn-glow text-xs"
+              className="bg-red-600 hover:bg-red-700 text-white font-bold text-xs"
               onClick={() => {
                 setOpen(false);
                 navigate("/products");
               }}
             >
-              Browse Vape Pods
+              Browse Vape Catalog
             </Button>
           </div>
         ) : (
@@ -52,43 +52,43 @@ export default function CartSidebar() {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex gap-3 rounded-xl border border-border/70 bg-secondary/30 p-3 glow-card"
+                  className="flex gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 shadow-sm"
                 >
                   {item.image_url ? (
                     <img
                       src={item.image_url}
                       alt={item.name}
-                      className="h-16 w-16 rounded-lg object-cover border border-border shrink-0 bg-muted"
+                      className="h-16 w-16 rounded-lg object-contain border border-gray-200 shrink-0 bg-white p-1"
                     />
                   ) : (
-                    <div className="h-16 w-16 rounded-lg bg-secondary/80 flex items-center justify-center text-muted-foreground text-xs shrink-0">
+                    <div className="h-16 w-16 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 text-xs shrink-0 font-semibold">
                       No img
                     </div>
                   )}
 
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div>
-                      <p className="text-xs font-semibold text-foreground truncate">{item.name}</p>
-                      <p className="text-xs font-bold text-primary font-display mt-0.5">
+                      <p className="text-xs font-bold text-black truncate">{item.name}</p>
+                      <p className="text-xs font-black text-red-600 mt-0.5">
                         PKR {item.price.toLocaleString()}
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between mt-2 pt-1 border-t border-border/40">
-                      <div className="flex items-center gap-1.5 border border-border/70 bg-background/60 rounded-md px-1 py-0.5">
+                    <div className="flex items-center justify-between mt-2 pt-1 border-t border-gray-200">
+                      <div className="flex items-center gap-1.5 border border-gray-300 bg-white rounded-md px-1 py-0.5 shadow-sm">
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-5 w-5 hover:bg-secondary text-foreground"
+                          className="h-5 w-5 hover:bg-gray-100 text-black font-bold"
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         >
                           <Minus className="h-2.5 w-2.5" />
                         </Button>
-                        <span className="text-xs font-bold w-5 text-center font-mono">{item.quantity}</span>
+                        <span className="text-xs font-bold w-5 text-center font-mono text-black">{item.quantity}</span>
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-5 w-5 hover:bg-secondary text-foreground"
+                          className="h-5 w-5 hover:bg-gray-100 text-black font-bold"
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         >
                           <Plus className="h-2.5 w-2.5" />
@@ -98,7 +98,7 @@ export default function CartSidebar() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6 text-destructive hover:bg-destructive/15"
+                        className="h-6 w-6 text-red-600 hover:bg-red-50"
                         onClick={() => removeItem(item.id)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -110,20 +110,20 @@ export default function CartSidebar() {
             </div>
 
             {/* Footer Summary */}
-            <div className="border-t border-border/80 pt-4 space-y-3.5 bg-card/60">
+            <div className="border-t border-gray-200 pt-4 space-y-3.5 bg-white">
               <div className="space-y-1.5 text-xs">
-                <div className="flex justify-between text-muted-foreground">
+                <div className="flex justify-between text-gray-700 font-medium">
                   <span>Shipping Across Pakistan</span>
-                  <span className="text-emerald-400 font-semibold">Standard COD</span>
+                  <span className="text-emerald-700 font-bold">Standard COD</span>
                 </div>
-                <div className="flex justify-between text-base font-display font-bold text-foreground pt-1 border-t border-border/40">
+                <div className="flex justify-between text-base font-bold text-black pt-1 border-t border-gray-200">
                   <span>Subtotal</span>
-                  <span className="text-primary text-lg">PKR {total().toLocaleString()}</span>
+                  <span className="text-red-600 text-lg font-black">PKR {total().toLocaleString()}</span>
                 </div>
               </div>
 
               <Button
-                className="w-full btn-glow h-11 text-sm font-bold flex items-center justify-center gap-2"
+                className="w-full bg-red-600 hover:bg-red-700 text-white h-11 text-sm font-black flex items-center justify-center gap-2 shadow-sm"
                 onClick={() => {
                   setOpen(false);
                   navigate("/checkout");
@@ -135,7 +135,7 @@ export default function CartSidebar() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-full text-xs text-muted-foreground hover:text-destructive"
+                className="w-full text-xs text-gray-600 hover:text-red-600 font-bold"
                 onClick={clearCart}
               >
                 Clear Cart

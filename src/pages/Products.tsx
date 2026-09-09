@@ -88,18 +88,18 @@ export default function Products() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+    <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl bg-white text-black">
       {/* Header Banner */}
       <div className="mb-6 space-y-2">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 border border-primary/30 text-primary text-xs font-semibold">
-          <Flame className="h-3.5 w-3.5" /> am/pm Live Vape Catalog
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold">
+          <Flame className="h-3.5 w-3.5" /> Ash Vapor Official Vape Catalog
         </div>
-        <h1 className="font-display text-2xl sm:text-4xl font-black text-foreground tracking-tight">
+        <h1 className="text-2xl sm:text-4xl font-black text-black tracking-tight">
           {matchedCategory ? matchedCategory.name : "All Vape Pods & Nic Salts"}
         </h1>
-        <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl">
+        <p className="text-xs sm:text-sm text-gray-700 max-w-2xl font-medium">
           {matchedCategory?.description ||
-            "Browse authentic pod systems, rechargeable smart disposables, replacement coils, and imported nic salts."}
+            "Browse authentic pod systems, rechargeable smart disposables, replacement coils, and imported nic salts at best prices in Pakistan."}
         </p>
       </div>
 
@@ -109,8 +109,8 @@ export default function Products() {
           onClick={() => handleSelectCategory("all")}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 border ${
             activeCatId === "all"
-              ? "bg-primary text-white border-primary glow-purple shadow-md"
-              : "bg-secondary/40 text-muted-foreground hover:text-foreground hover:bg-secondary border-border/70"
+              ? "bg-red-600 text-white border-red-600 shadow-sm"
+              : "bg-white text-black hover:text-red-600 hover:bg-gray-50 border-gray-300"
           }`}
         >
           All Items ({products.length})
@@ -124,8 +124,8 @@ export default function Products() {
               onClick={() => handleSelectCategory(c.id)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 border ${
                 isActive
-                  ? "bg-primary text-white border-primary glow-purple shadow-md"
-                  : "bg-secondary/40 text-muted-foreground hover:text-foreground hover:bg-secondary border-border/70"
+                  ? "bg-red-600 text-white border-red-600 shadow-sm"
+                  : "bg-white text-black hover:text-red-600 hover:bg-gray-50 border-gray-300"
               }`}
             >
               {c.name} ({count})
@@ -135,20 +135,20 @@ export default function Products() {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between mb-8 bg-secondary/30 p-3 rounded-2xl border border-border/60">
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between mb-8 bg-gray-50 p-3 rounded-2xl border border-gray-200">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
           <Input
             placeholder="Search flavor, brand, pod model (e.g. Caliburn, Xros, Mango)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-10 bg-background/50 border-border text-xs sm:text-sm"
+            className="pl-9 h-10 bg-white border-gray-300 text-black text-xs sm:text-sm focus:border-red-600"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -158,10 +158,10 @@ export default function Products() {
         {/* Category Dropdown */}
         <div className="flex items-center gap-3">
           <Select value={activeCatId} onValueChange={handleSelectCategory}>
-            <SelectTrigger className="w-full sm:w-[220px] h-10 text-xs sm:text-sm bg-background/50 border-border">
+            <SelectTrigger className="w-full sm:w-[220px] h-10 text-xs sm:text-sm bg-white border-gray-300 text-black font-semibold">
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
-            <SelectContent className="bg-card border-border">
+            <SelectContent className="bg-white border-gray-200 text-black">
               <SelectItem value="all">All Categories ({products.length})</SelectItem>
               {categories.map((c) => {
                 const count = products.filter((p) => p.category_id === c.id).length;
@@ -177,16 +177,16 @@ export default function Products() {
       </div>
 
       {/* Results Status Bar */}
-      <div className="flex items-center justify-between mb-6 text-xs text-muted-foreground">
+      <div className="flex items-center justify-between mb-6 text-xs text-gray-700 font-medium">
         <span>
-          Showing <strong className="text-foreground">{filteredProducts.length}</strong> products
+          Showing <strong className="text-black">{filteredProducts.length}</strong> products
           {matchedCategory ? ` in ${matchedCategory.name}` : ""}
           {searchQuery ? ` matching "${searchQuery}"` : ""}
         </span>
         {(activeCatId !== "all" || searchQuery) && (
           <button
             onClick={handleClearFilters}
-            className="text-primary hover:underline font-semibold flex items-center gap-1"
+            className="text-red-600 hover:underline font-bold flex items-center gap-1"
           >
             <X className="h-3 w-3" /> Reset all filters
           </button>
@@ -195,17 +195,17 @@ export default function Products() {
 
       {/* Products Grid */}
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-20 glass-dark rounded-3xl border border-border/60 max-w-md mx-auto p-8 space-y-4 glow-card">
-          <div className="h-16 w-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto text-primary">
+        <div className="text-center py-20 bg-white rounded-3xl border border-gray-200 max-w-md mx-auto p-8 space-y-4 shadow-sm">
+          <div className="h-16 w-16 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto text-red-600">
             <Sparkles className="h-8 w-8" />
           </div>
           <div>
-            <h3 className="font-display text-xl font-bold text-foreground">
+            <h3 className="text-xl font-bold text-black">
               {matchedCategory
                 ? `No products in ${matchedCategory.name} yet`
                 : "No matching products found"}
             </h3>
-            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+            <p className="text-xs text-gray-600 mt-1.5 leading-relaxed">
               New shipments arrive weekly. You can ask our team directly on WhatsApp for live stock and custom flavor requests!
             </p>
           </div>
@@ -213,16 +213,16 @@ export default function Products() {
             <Button
               onClick={handleClearFilters}
               variant="outline"
-              className="text-xs w-full sm:w-auto border-border"
+              className="text-xs w-full sm:w-auto border-gray-300 text-black hover:border-red-600"
             >
               View All Products
             </Button>
             <Button
               asChild
-              className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold w-full sm:w-auto btn-glow"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold w-full sm:w-auto shadow-sm"
             >
               <a
-                href="https://wa.me/923104703131?text=Hello%20am%2Fpm%20Vape%20Store!%20Do%20you%20have%20stock%20for%20this?"
+                href="https://wa.me/923104703131?text=Hello%20Ash%20Vapor!%20Do%20you%20have%20stock%20for%20this?"
                 target="_blank"
                 rel="noreferrer"
               >

@@ -234,7 +234,7 @@ export default function Admin() {
       setAdminLoggedIn(true);
       setIsAdmin(true);
       setLoginError("");
-      toast({ title: "Welcome Administrator", description: "am/pm Manager Portal Unlocked" });
+      toast({ title: "Welcome Administrator", description: "Ash Vapor Manager Portal Unlocked" });
       loadData();
     } else {
       setLoginError("Invalid credentials. Use admin / admin.");
@@ -497,15 +497,15 @@ export default function Admin() {
             <div className="flex justify-center">
               <img
                 src="/logo-transparent.png"
-                alt="am/pm Logo"
-                className="h-20 sm:h-24 w-auto object-contain drop-shadow-[0_0_20px_rgba(139,92,246,0.45)]"
+                alt="Ash Vapor Logo"
+                className="h-20 sm:h-24 w-auto object-contain"
               />
             </div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 border border-primary/40 text-primary text-xs font-bold">
-              <Shield className="h-3.5 w-3.5 text-primary" /> MANAGER PORTAL
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold">
+              <Shield className="h-3.5 w-3.5 text-red-600" /> MANAGER PORTAL
             </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              am<span className="text-primary">/</span>pm Admin Access
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-black">
+              Ash<span className="text-red-600">Vapor</span> Admin Access
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground">
               Please enter the administrator credentials to manage products, categories, orders, and banners.
@@ -571,16 +571,16 @@ export default function Admin() {
         <div className="flex items-center gap-4">
           <img
             src="/logo-transparent.png"
-            alt="am/pm Logo"
-            className="h-14 w-auto object-contain drop-shadow-[0_0_12px_rgba(139,92,246,0.35)]"
+            alt="Ash Vapor Logo"
+            className="h-14 w-auto object-contain"
           />
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-primary px-2 py-0.5 rounded bg-primary/10 border border-primary/25">Store Control Center</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-red-600 px-2 py-0.5 rounded bg-red-50 border border-red-200">Store Control Center</span>
               <span className="text-[10px] font-medium text-muted-foreground">• Live Supabase Synced</span>
             </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-black text-foreground tracking-tight">
-              am<span className="text-primary font-light">/</span>pm Manager Portal
+            <h1 className="font-display text-2xl sm:text-3xl font-black text-black tracking-tight">
+              Ash<span className="text-red-600">Vapor</span> Manager Portal
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground">
               Manage your vape pods catalog, orders, categories, and promotions in real time.
