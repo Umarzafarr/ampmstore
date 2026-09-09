@@ -281,6 +281,30 @@ export async function addCategory(name: string, description?: string): Promise<C
   return created;
 }
 
+export async function updateCategory(id: string, name: string, description?: string): Promise<Category | null> {
+  let updated: Category | null = null;
+  try {
+    const { data, error } = await supabase
+      .from("categories")
+      .update({ name, description })
+      .eq("id", id)
+      .select()
+      .maybeSingle();
+    if (!error && data) updated = data as Category;
+  } catch (e) {
+    console.warn("DB updateCategory error:", e);
+  }
+
+  const categories = loadLocal<Category[]>(KEY_CATEGORIES, INITIAL_CATEGORIES);
+  const idx = categories.findIndex((c) => c.id === id);
+  if (idx !== -1) {
+    categories[idx] = updated || { ...categories[idx], name, description };
+    saveLocal(KEY_CATEGORIES, categories);
+    return categories[idx];
+  }
+  return updated;
+}
+
 export async function deleteCategory(id: string): Promise<void> {
   try {
     await supabase.from("categories").delete().eq("id", id);

@@ -117,9 +117,11 @@ export default function ProductDetail() {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               {product.categories?.name && (
-                <Badge variant="secondary" className="bg-secondary/70 text-foreground border-border">
-                  {product.categories.name}
-                </Badge>
+                <Link to={`/products?category=${product.category_id || encodeURIComponent(product.categories.name)}`}>
+                  <Badge variant="secondary" className="bg-secondary/70 hover:bg-secondary text-foreground border-border cursor-pointer transition-colors">
+                    {product.categories.name}
+                  </Badge>
+                </Link>
               )}
               <span className="text-xs font-mono text-muted-foreground">SKU: {product.sku}</span>
             </div>

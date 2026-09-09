@@ -18,7 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   Product, Category, Order, Banner,
   getProducts, saveProduct, deleteProduct as removeProduct,
-  getCategories, addCategory as insertCategory, deleteCategory as removeCategory,
+  getCategories, addCategory as insertCategory, updateCategory as modifyCategory, deleteCategory as removeCategory,
   getOrders, updateOrderStatus as changeOrderStatus,
   getBanners, saveBanner as updateBanner, deleteBanner as removeBanner, toggleBannerActive,
   isAdminLoggedIn, setAdminLoggedIn, verifyAdminCredentials
@@ -180,6 +180,7 @@ export default function Admin() {
   // Category form state
   const [catName, setCatName] = useState("");
   const [catDesc, setCatDesc] = useState("");
+  const [editingCatId, setEditingCatId] = useState<string | null>(null);
 
   // Product form state
   const [prodName, setProdName] = useState("");
@@ -248,16 +249,31 @@ export default function Admin() {
   };
 
   // ---------------- Category handlers ----------------
-  const handleAddCategory = async () => {
+  const handleSaveCategory = async () => {
     if (!catName.trim()) return;
-    await insertCategory(catName.trim(), catDesc.trim());
-    toast({ title: "Category added", description: catName });
+    if (editingCatId) {
+      await modifyCategory(editingCatId, catName.trim(), catDesc.trim());
+      toast({ title: "Category updated", description: catName });
+      setEditingCatId(null);
+    } else {
+      await insertCategory(catName.trim(), catDesc.trim());
+      toast({ title: "Category added", description: catName });
+    }
     setCatName("");
     setCatDesc("");
     loadData();
   };
 
+  const handleCancelCategoryEdit = () => {
+    setEditingCatId(null);
+    setCatName("");
+    setCatDesc("");
+  };
+
   const handleDeleteCategory = async (id: string) => {
+    if (editingCatId === id) {
+      handleCancelCategoryEdit();
+    }
     await removeCategory(id);
     toast({ title: "Category deleted" });
     loadData();
@@ -874,7 +890,16 @@ export default function Admin() {
         {/* ---------------- CATEGORIES TAB ---------------- */}
         <TabsContent value="categories" className="space-y-4">
           <div className="rounded-xl border border-border/80 bg-card/60 p-5 space-y-4">
-            <h2 className="text-base font-semibold text-foreground">Add New Category</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-semibold text-foreground">
+                {editingCatId ? "Edit Category" : "Add New Category"}
+              </h2>
+              {editingCatId && (
+                <Button variant="ghost" size="sm" onClick={handleCancelCategoryEdit} className="text-xs text-muted-foreground">
+                  Cancel Edit
+                </Button>
+              )}
+            </div>
             <div className="grid sm:grid-cols-3 gap-3">
               <Input
                 placeholder="Category name (e.g. Disposable Pods)"
@@ -888,25 +913,69 @@ export default function Admin() {
                 onChange={(e) => setCatDesc(e.target.value)}
                 className="bg-secondary/40 text-sm"
               />
-              <Button onClick={handleAddCategory} className="btn-glow">
-                <Plus className="h-4 w-4 mr-1" /> Add Category
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={handleSaveCategory} className="btn-glow flex-1">
+                  {editingCatId ? (
+                    <>
+                      <CheckCircle2 className="h-4 w-4 mr-1" /> Update Category
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="h-4 w-4 mr-1" /> Add Category
+                    </>
+                  )}
+                </Button>
+                {editingCatId && (
+                  <Button variant="outline" onClick={handleCancelCategoryEdit}>
+                    Cancel
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-3">
             {categories.map((c) => {
               const count = products.filter((p) => p.category_id === c.id).length;
+              const isSelected = editingCatId === c.id;
               return (
-                <div key={c.id} className="flex items-center justify-between rounded-xl border border-border/80 bg-card/70 p-4 glow-card">
-                  <div>
+                <div
+                  key={c.id}
+                  className={`flex items-center justify-between rounded-xl border p-4 glow-card transition-all ${
+                    isSelected ? "border-primary bg-primary/10 shadow-lg" : "border-border/80 bg-card/70"
+                  }`}
+                >
+                  <div className="flex-1 mr-3">
                     <p className="font-semibold text-foreground text-sm">{c.name}</p>
                     {c.description && <p className="text-xs text-muted-foreground mt-0.5">{c.description}</p>}
-                    <span className="text-[10px] text-primary font-medium mt-1 inline-block">{count} products assigned</span>
+                    <span className="text-[10px] text-primary font-medium mt-1 inline-block">
+                      {count} products assigned • ID: {c.id.slice(0, 8)}...
+                    </span>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/15" onClick={() => handleDeleteCategory(c.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 hover:text-primary"
+                      title="Edit Category"
+                      onClick={() => {
+                        setEditingCatId(c.id);
+                        setCatName(c.name);
+                        setCatDesc(c.description || "");
+                      }}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive hover:bg-destructive/15"
+                      title="Delete Category"
+                      onClick={() => handleDeleteCategory(c.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               );
             })}

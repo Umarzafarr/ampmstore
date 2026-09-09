@@ -90,8 +90,13 @@ export default function Index() {
 
   const displayedProducts = useMemo(() => {
     if (selectedCategory === "all") return products;
-    return products.filter((p) => p.category_id === selectedCategory);
-  }, [products, selectedCategory]);
+    const catObj = categories.find((c) => c.id === selectedCategory);
+    return products.filter(
+      (p) =>
+        p.category_id === selectedCategory ||
+        (catObj && p.categories?.name && p.categories.name.toLowerCase() === catObj.name.toLowerCase())
+    );
+  }, [products, selectedCategory, categories]);
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
@@ -197,71 +202,50 @@ export default function Index() {
           <p className="text-xs sm:text-sm text-muted-foreground">Browse authentic refillable pod devices, smart disposables & imported nic-salts</p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link
-            to="/products?cat=Pod+Systems"
-            className="group relative rounded-2xl border border-border/80 bg-card/60 p-5 hover:border-primary/60 transition-all duration-300 glow-card hover:-translate-y-1 flex flex-col justify-between"
-          >
-            <div className="h-12 w-12 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
-              <Zap className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-display font-bold text-foreground text-sm sm:text-base group-hover:text-primary transition-colors">Pod Systems</h3>
-              <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">Vaporesso, Uwell Caliburn & OXVA refillable kits</p>
-            </div>
-            <div className="mt-3 flex items-center text-xs font-bold text-primary group-hover:translate-x-1 transition-transform">
-              Explore Pods <ArrowRight className="h-3.5 w-3.5 ml-1" />
-            </div>
-          </Link>
+        {categories.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {categories.map((c, i) => {
+              const iconMap = [Zap, Flame, Sparkles, Layers];
+              const colorMap = [
+                { border: "hover:border-primary/60", bg: "bg-primary/15 text-primary border-primary/25", text: "group-hover:text-primary", link: "text-primary" },
+                { border: "hover:border-accent/60", bg: "bg-accent/15 text-accent border-accent/25", text: "group-hover:text-accent", link: "text-accent" },
+                { border: "hover:border-violet-500/60", bg: "bg-violet-500/15 text-violet-400 border-violet-500/25", text: "group-hover:text-violet-400", link: "text-violet-400" },
+                { border: "hover:border-emerald-500/60", bg: "bg-emerald-500/15 text-emerald-400 border-emerald-500/25", text: "group-hover:text-emerald-400", link: "text-emerald-400" },
+              ];
+              const theme = colorMap[i % colorMap.length];
+              const IconComp = iconMap[i % iconMap.length];
+              const prodCount = products.filter((p) => p.category_id === c.id).length;
 
-          <Link
-            to="/products?cat=Disposable+Vapes"
-            className="group relative rounded-2xl border border-border/80 bg-card/60 p-5 hover:border-accent/60 transition-all duration-300 glow-card hover:-translate-y-1 flex flex-col justify-between"
-          >
-            <div className="h-12 w-12 rounded-xl bg-accent/15 border border-accent/25 flex items-center justify-center text-accent mb-3 group-hover:scale-110 transition-transform">
-              <Flame className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-display font-bold text-foreground text-sm sm:text-base group-hover:text-accent transition-colors">Disposables</h3>
-              <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">10k to 20k puff smart devices (Geek Bar, Elf Bar)</p>
-            </div>
-            <div className="mt-3 flex items-center text-xs font-bold text-accent group-hover:translate-x-1 transition-transform">
-              Explore Disposables <ArrowRight className="h-3.5 w-3.5 ml-1" />
-            </div>
-          </Link>
-
-          <Link
-            to="/products?cat=Nicotine+Salts"
-            className="group relative rounded-2xl border border-border/80 bg-card/60 p-5 hover:border-violet-500/60 transition-all duration-300 glow-card hover:-translate-y-1 flex flex-col justify-between"
-          >
-            <div className="h-12 w-12 rounded-xl bg-violet-500/15 border border-violet-500/25 flex items-center justify-center text-violet-400 mb-3 group-hover:scale-110 transition-transform">
-              <Sparkles className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-display font-bold text-foreground text-sm sm:text-base group-hover:text-violet-400 transition-colors">Nicotine Salts</h3>
-              <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">30ml premium bottles: 25mg & 50mg imported juices</p>
-            </div>
-            <div className="mt-3 flex items-center text-xs font-bold text-violet-400 group-hover:translate-x-1 transition-transform">
-              Explore Salts <ArrowRight className="h-3.5 w-3.5 ml-1" />
-            </div>
-          </Link>
-
-          <Link
-            to="/products?cat=Coils+%26+Cartridges"
-            className="group relative rounded-2xl border border-border/80 bg-card/60 p-5 hover:border-emerald-500/60 transition-all duration-300 glow-card hover:-translate-y-1 flex flex-col justify-between"
-          >
-            <div className="h-12 w-12 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
-              <Layers className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-display font-bold text-foreground text-sm sm:text-base group-hover:text-emerald-400 transition-colors">Coils & Pods</h3>
-              <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">Replacement pods, mesh coils & accessories</p>
-            </div>
-            <div className="mt-3 flex items-center text-xs font-bold text-emerald-400 group-hover:translate-x-1 transition-transform">
-              Explore Coils <ArrowRight className="h-3.5 w-3.5 ml-1" />
-            </div>
-          </Link>
-        </div>
+              return (
+                <Link
+                  key={c.id}
+                  to={`/products?category=${c.id}`}
+                  className={`group relative rounded-2xl border border-border/80 bg-card/60 p-5 ${theme.border} transition-all duration-300 glow-card hover:-translate-y-1 flex flex-col justify-between`}
+                >
+                  <div className={`h-12 w-12 rounded-xl ${theme.bg} border flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                    <IconComp className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className={`font-display font-bold text-foreground text-sm sm:text-base ${theme.text} transition-colors`}>
+                      {c.name}
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">
+                      {c.description || `Browse authentic ${c.name} gear`}
+                    </p>
+                  </div>
+                  <div className={`mt-3 flex items-center text-xs font-bold ${theme.link} group-hover:translate-x-1 transition-transform`}>
+                    <span>Explore ({prodCount})</span> <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-10 glass-dark rounded-2xl border border-border/60">
+            <Flame className="mx-auto h-7 w-7 text-primary animate-pulse mb-2" />
+            <p className="text-xs text-muted-foreground">Connecting live categories from database...</p>
+          </div>
+        )}
       </section>
 
       {/* ========== TOP AUTHENTIC BRANDS TICKER ========== */}
@@ -343,12 +327,27 @@ export default function Index() {
               <MessageCircle className="h-8 w-8" />
             </div>
             <div>
-              <h3 className="font-display text-xl font-bold text-foreground">New Vape Drops Arriving Daily</h3>
+              <h3 className="font-display text-xl font-bold text-foreground">
+                {selectedCategory !== "all"
+                  ? `No products in ${categories.find((c) => c.id === selectedCategory)?.name || "selected category"} yet`
+                  : "New Vape Drops Arriving Daily"}
+              </h3>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
-                Our team is actively stocking fresh shipments of pod kits and nicotine salts. Order directly on WhatsApp for immediate dispatch!
+                {selectedCategory !== "all"
+                  ? "Fresh stock is arriving weekly. Chat with us on WhatsApp for exact flavor availability and custom reservations!"
+                  : "Our team is actively stocking fresh shipments of pod kits and nicotine salts. Order directly on WhatsApp for immediate dispatch!"}
               </p>
             </div>
             <div className="pt-2 flex flex-wrap justify-center gap-3">
+              {selectedCategory !== "all" && (
+                <Button
+                  onClick={() => setSelectedCategory("all")}
+                  variant="outline"
+                  className="text-xs h-10 border-border hover:border-primary/50"
+                >
+                  View All Products ({products.length})
+                </Button>
+              )}
               <Button asChild className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold h-10 px-5 btn-glow">
                 <a href="https://wa.me/923104703131" target="_blank" rel="noreferrer">
                   <MessageCircle className="h-4 w-4 mr-1.5" /> WhatsApp Order (03104703131)
@@ -504,9 +503,13 @@ export default function Index() {
               <h4 className="font-display text-xs font-bold uppercase tracking-widest text-foreground mb-4">Explore Store</h4>
               <ul className="space-y-2 text-xs text-muted-foreground">
                 <li><Link to="/products" className="hover:text-primary transition-colors">All Vape Hardware</Link></li>
-                <li><Link to="/products?cat=Pod+Systems" className="hover:text-primary transition-colors">Pod Systems & Kits</Link></li>
-                <li><Link to="/products?cat=Disposable+Vapes" className="hover:text-primary transition-colors">Disposable Vapes</Link></li>
-                <li><Link to="/products?cat=Nicotine+Salts" className="hover:text-primary transition-colors">Nicotine Salts (30ml)</Link></li>
+                {categories.slice(0, 4).map((c) => (
+                  <li key={c.id}>
+                    <Link to={`/products?category=${c.id}`} className="hover:text-primary transition-colors">
+                      {c.name}
+                    </Link>
+                  </li>
+                ))}
                 <li><Link to="/orders" className="hover:text-primary transition-colors">Track Your Order</Link></li>
               </ul>
             </div>

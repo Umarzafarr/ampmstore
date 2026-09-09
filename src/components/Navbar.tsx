@@ -5,12 +5,13 @@ import { useCartStore } from "@/lib/cart-store";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { isAdminLoggedIn, setAdminLoggedIn } from "@/lib/store-data";
+import { isAdminLoggedIn, setAdminLoggedIn, getCategories, Category } from "@/lib/store-data";
 
 export default function Navbar() {
   const { toggleCart, itemCount } = useCartStore();
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
@@ -22,10 +23,19 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const refreshAuth = async () => {
+  const refreshData = async () => {
     // Check local admin state
     if (isAdminLoggedIn()) {
       setIsAdmin(true);
+    }
+
+    try {
+      const cats = await getCategories();
+      if (cats && cats.length > 0) {
+        setCategories(cats);
+      }
+    } catch {
+      // ignore
     }
 
     try {
@@ -41,8 +51,8 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    refreshAuth();
-    const interval = setInterval(refreshAuth, 2000);
+    refreshData();
+    const interval = setInterval(refreshData, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -112,15 +122,15 @@ export default function Navbar() {
           <Link to="/products" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
             <span>All Vapes</span>
           </Link>
-          <Link to="/products?cat=Pod+Systems" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-            <span>Pod Kits</span>
-          </Link>
-          <Link to="/products?cat=Disposable+Vapes" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-            <span>Disposables</span>
-          </Link>
-          <Link to="/products?cat=Nicotine+Salts" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-            <span>Nic Salts</span>
-          </Link>
+          {categories.slice(0, 4).map((c) => (
+            <Link
+              key={c.id}
+              to={`/products?category=${c.id}`}
+              className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors whitespace-nowrap"
+            >
+              <span>{c.name}</span>
+            </Link>
+          ))}
           <Link to="/orders" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
             <span>Track Order</span>
           </Link>
@@ -171,15 +181,16 @@ export default function Navbar() {
           <Link to="/products" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
             All Vapes
           </Link>
-          <Link to="/products?cat=Pod+Systems" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
-            Pod Kits
-          </Link>
-          <Link to="/products?cat=Disposable+Vapes" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
-            Disposables
-          </Link>
-          <Link to="/products?cat=Nicotine+Salts" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
-            Nic Salts
-          </Link>
+          {categories.map((c) => (
+            <Link
+              key={c.id}
+              to={`/products?category=${c.id}`}
+              className="block text-sm font-medium text-muted-foreground hover:text-primary"
+              onClick={() => setMenuOpen(false)}
+            >
+              {c.name}
+            </Link>
+          ))}
           <Link to="/orders" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
             Track Order
           </Link>
