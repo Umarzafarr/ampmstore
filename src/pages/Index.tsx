@@ -126,34 +126,21 @@ export default function Index() {
       <section className="relative overflow-hidden bg-gradient-to-b from-gray-50 via-white to-white pt-8 pb-14 border-b border-gray-200">
         <div className="container relative mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-5">
-            {/* User Logo Display */}
-            <div className="flex justify-center pt-2 pb-1">
+            {/* User Logo Display - Enlarged */}
+            <div className="flex justify-center pt-2 pb-2">
               <div className="relative group inline-block">
                 <img
                   src="/logo-transparent.png"
                   alt="Ash Vapor"
-                  className="h-32 sm:h-44 md:h-52 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-sm"
+                  className="h-44 sm:h-56 md:h-64 lg:h-72 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-sm"
                 />
               </div>
-            </div>
-
-            {/* Top Red Pill Tag */}
-            <div className="inline-flex items-center gap-2 rounded-full bg-red-50 px-4 py-1.5 text-xs font-bold text-red-600 border border-red-200 shadow-sm">
-              <Flame className="h-4 w-4 text-red-600 animate-pulse" />
-              <span>Ash Vapor • Pakistan's #1 Online Vape Store</span>
-              <span className="text-gray-400">•</span>
-              <span className="text-black font-semibold">Cash on Delivery Available</span>
             </div>
 
             {/* Main Headline - Bold Black Font */}
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-black leading-[1.1]">
               Best Vape Price <span className="text-red-600">in Pakistan</span>
             </h1>
-
-            {/* Subheading */}
-            <p className="text-sm sm:text-base md:text-lg text-gray-800 max-w-2xl mx-auto leading-relaxed font-medium">
-              Buy authentic pod kits, smart rechargeable disposables, replacement coils, and imported premium nic-salt e-liquids at the most competitive prices in Pakistan.
-            </p>
 
             {/* CTA Buttons - VapeMall Style */}
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
