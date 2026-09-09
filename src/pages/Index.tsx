@@ -97,34 +97,43 @@ export default function Index() {
   }, [products, selectedCategory, categories]);
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-red-600 selection:text-white">
-      {/* ========== HERO SECTION (SEVEN SPICE STYLE) ========== */}
+    <div className="min-h-screen bg-black text-white selection:bg-yellow-400 selection:text-black">
+      {/* ========== HERO SECTION (LUXURY DARK & GOLD/YELLOW THEME) ========== */}
       <section className="relative min-h-[75vh] sm:min-h-[82vh] flex items-center justify-center overflow-hidden bg-black text-white px-4 py-16 sm:py-24">
-        {/* Moody cinematic ambient red lighting */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[900px] h-[500px] bg-gradient-to-b from-red-600/20 via-red-900/10 to-transparent blur-[140px] pointer-events-none" />
+        {/* Moody cinematic ambient yellow/amber lighting */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[900px] h-[500px] bg-gradient-to-b from-yellow-500/15 via-amber-600/10 to-transparent blur-[140px] pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/40 via-black to-black pointer-events-none" />
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
-          {/* Main Headline - Seven Spice Style Typography */}
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-7">
+          {/* Main Brand Logo - Big, Centered & Prominent */}
+          <div className="flex justify-center mb-2">
+            <img
+              src="/logo-white-transparent.png"
+              alt="Ash Vapers"
+              className="h-44 sm:h-56 md:h-64 lg:h-72 w-auto object-contain drop-shadow-[0_15px_45px_rgba(250,204,21,0.25)] transition-transform duration-500 hover:scale-105"
+            />
+          </div>
+
+          {/* Refined Sleek Typography */}
           <div className="space-y-2">
-            <span className="text-red-600 block text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-wider font-display drop-shadow-[0_4px_20px_rgba(220,38,38,0.4)]">
+            <span className="text-yellow-400 block text-sm sm:text-base md:text-lg font-black uppercase tracking-[0.25em] font-display drop-shadow-[0_2px_12px_rgba(250,204,21,0.35)]">
               LIFE IS TOO SHORT
             </span>
-            <h1 className="text-white block text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black uppercase tracking-tight leading-[0.95] font-display">
+            <h1 className="text-white block text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-tight font-display">
               FOR BLAND &amp; BORING
             </h1>
           </div>
 
           {/* Clean Subtitle */}
-          <p className="text-sm sm:text-base md:text-lg text-zinc-300 max-w-2xl mx-auto leading-relaxed font-medium">
+          <p className="text-xs sm:text-sm md:text-base text-zinc-300 max-w-xl mx-auto leading-relaxed font-medium">
             Curated high-puff smart disposables, authentic pod systems, and premium imported nic salts.
           </p>
 
-          {/* Primary Call to Action Button - Seven Spice Red Rectangular CTA */}
-          <div className="pt-2">
+          {/* Primary Call to Action Button - Yellow CTA */}
+          <div className="pt-2 sm:pt-4">
             <Button
               size="lg"
-              className="bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest px-10 sm:px-12 py-4 sm:py-5 h-13 sm:h-14 text-sm sm:text-base rounded-md shadow-2xl transition-all duration-300 hover:scale-105"
+              className="bg-yellow-400 hover:bg-yellow-300 text-black font-black uppercase tracking-widest px-10 sm:px-12 py-4 sm:py-5 h-12 sm:h-14 text-sm sm:text-base rounded-md shadow-[0_10px_30px_rgba(250,204,21,0.3)] transition-all duration-300 hover:scale-105"
               asChild
             >
               <Link to="/products">
@@ -132,22 +141,13 @@ export default function Index() {
               </Link>
             </Button>
           </div>
-
-          {/* Ambient Device Visual Accent */}
-          <div className="pt-4 flex justify-center opacity-85 hover:opacity-100 transition-opacity duration-500">
-            <img
-              src="/logo-white-transparent.png"
-              alt="Ash Vapor"
-              className="h-28 sm:h-36 md:h-44 w-auto object-contain drop-shadow-[0_10px_30px_rgba(255,255,255,0.15)] pointer-events-none"
-            />
-          </div>
         </div>
       </section>
 
       {/* ========== SHOP BY CATEGORY ========== */}
       <section className="container mx-auto px-4 py-16 border-t border-zinc-900">
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-1">
-          <span className="text-xs font-bold uppercase tracking-widest text-red-500">Curated Collections</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-yellow-400">Curated Collections</span>
           <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white font-display">Shop by Category</h2>
           <p className="text-xs sm:text-sm text-zinc-400">
             Select from imported refillable pods, long-lasting smart disposables, and premium nic-salts
@@ -163,20 +163,20 @@ export default function Index() {
                 <Link
                   key={c.id}
                   to={`/products?category=${c.id}`}
-                  className="group relative rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 hover:border-red-600/80 hover:bg-zinc-900/80 transition-all duration-300 flex flex-col justify-between shadow-lg"
+                  className="group relative rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 hover:border-yellow-400/80 hover:bg-zinc-900/80 transition-all duration-300 flex flex-col justify-between shadow-lg"
                 >
-                  <div className="h-12 w-12 rounded-xl bg-red-950/50 text-red-500 border border-red-900/50 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                  <div className="h-12 w-12 rounded-xl bg-yellow-950/40 text-yellow-400 border border-yellow-800/40 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-yellow-400 group-hover:text-black transition-all duration-300">
                     <Flame className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white text-base group-hover:text-red-400 transition-colors">
+                    <h3 className="font-bold text-white text-base group-hover:text-yellow-400 transition-colors">
                       {c.name}
                     </h3>
                     <p className="text-xs text-zinc-400 mt-1 line-clamp-2">
                       {c.description || `Explore genuine ${c.name} hardware`}
                     </p>
                   </div>
-                  <div className="mt-4 flex items-center text-xs font-bold text-red-500 group-hover:translate-x-1 transition-transform">
+                  <div className="mt-4 flex items-center text-xs font-bold text-yellow-400 group-hover:translate-x-1 transition-transform">
                     <span>Explore ({prodCount})</span> <ArrowRight className="h-3.5 w-3.5 ml-1" />
                   </div>
                 </Link>
@@ -185,7 +185,7 @@ export default function Index() {
           </div>
         ) : (
           <div className="text-center py-10 bg-zinc-950 rounded-2xl border border-zinc-800">
-            <Flame className="mx-auto h-7 w-7 text-red-500 animate-pulse mb-2" />
+            <Flame className="mx-auto h-7 w-7 text-yellow-400 animate-pulse mb-2" />
             <p className="text-xs text-zinc-400">Connecting categories from database...</p>
           </div>
         )}
@@ -205,7 +205,7 @@ export default function Index() {
               <Link
                 key={brand}
                 to={`/products?q=${encodeURIComponent(brand)}`}
-                className="px-4 py-2 rounded-xl border border-zinc-800 bg-zinc-900/80 hover:border-red-500 hover:text-white text-xs font-bold text-zinc-300 shadow-sm transition-all duration-200"
+                className="px-4 py-2 rounded-xl border border-zinc-800 bg-zinc-900/80 hover:border-yellow-400 hover:text-yellow-400 text-xs font-bold text-zinc-300 shadow-sm transition-all duration-200"
               >
                 {brand}
               </Link>
@@ -218,7 +218,7 @@ export default function Index() {
       <section className="container mx-auto px-4 py-16">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-red-500 uppercase tracking-wider mb-1">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-yellow-400 uppercase tracking-wider mb-1">
               <Sparkles className="h-3.5 w-3.5" /> Direct From Inventory
             </div>
             <h2 className="text-2xl sm:text-4xl font-black uppercase text-white font-display">Featured Vape Hardware</h2>
@@ -227,7 +227,7 @@ export default function Index() {
             </p>
           </div>
 
-          <Button variant="outline" className="hidden sm:inline-flex border-zinc-700 bg-zinc-900 text-white hover:border-red-500 hover:text-red-400 text-xs font-bold" asChild>
+          <Button variant="outline" className="hidden sm:inline-flex border-zinc-700 bg-zinc-900 text-white hover:border-yellow-400 hover:text-yellow-400 text-xs font-bold" asChild>
             <Link to="/products">
               View All Catalog <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
             </Link>
@@ -241,7 +241,7 @@ export default function Index() {
               onClick={() => setSelectedCategory("all")}
               className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
                 selectedCategory === "all"
-                  ? "bg-red-600 text-white shadow-md"
+                  ? "bg-yellow-400 text-black font-extrabold shadow-md"
                   : "bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800"
               }`}
             >
@@ -253,7 +253,7 @@ export default function Index() {
                 onClick={() => setSelectedCategory(c.id)}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
                   selectedCategory === c.id
-                    ? "bg-red-600 text-white shadow-md"
+                    ? "bg-yellow-400 text-black font-extrabold shadow-md"
                     : "bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800"
                 }`}
               >
@@ -266,12 +266,12 @@ export default function Index() {
         {/* Products Grid with dark={true} */}
         {loading ? (
           <div className="text-center py-20 bg-zinc-950 rounded-2xl border border-zinc-800">
-            <Flame className="mx-auto h-8 w-8 text-red-500 animate-pulse mb-2" />
+            <Flame className="mx-auto h-8 w-8 text-yellow-400 animate-pulse mb-2" />
             <p className="text-sm text-white font-semibold">Loading live products...</p>
           </div>
         ) : displayedProducts.length === 0 ? (
           <div className="text-center py-16 bg-zinc-950 rounded-3xl border border-zinc-800 max-w-lg mx-auto p-8 space-y-4">
-            <div className="h-16 w-16 rounded-2xl bg-red-950/40 border border-red-900/50 flex items-center justify-center mx-auto text-red-500">
+            <div className="h-16 w-16 rounded-2xl bg-yellow-950/40 border border-yellow-800/50 flex items-center justify-center mx-auto text-yellow-400">
               <ShoppingBag className="h-8 w-8" />
             </div>
             <div>
@@ -285,7 +285,7 @@ export default function Index() {
               </p>
             </div>
             <div className="pt-2 flex justify-center gap-3">
-              <Button asChild className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold h-10 px-6">
+              <Button asChild className="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black h-10 px-6">
                 <Link to="/products">View All Products</Link>
               </Button>
             </div>
@@ -305,8 +305,8 @@ export default function Index() {
           <div className="rounded-3xl bg-gradient-to-b from-zinc-900 to-zinc-950 border border-zinc-800 p-6 sm:p-10 relative overflow-hidden shadow-2xl">
             <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-zinc-800">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/60 text-red-400 border border-red-800/60 text-xs font-extrabold uppercase tracking-wider mb-2">
-                  <Timer className="h-3.5 w-3.5 text-red-500" /> Limited Time Specials
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-950/50 text-yellow-400 border border-yellow-800/50 text-xs font-extrabold uppercase tracking-wider mb-2">
+                  <Timer className="h-3.5 w-3.5 text-yellow-400" /> Limited Time Specials
                 </div>
                 <h2 className="text-2xl sm:text-4xl font-black uppercase text-white font-display">Daily Drops</h2>
                 <p className="text-xs sm:text-sm text-zinc-400 mt-1">Special price drops reset tonight at midnight.</p>
@@ -320,7 +320,7 @@ export default function Index() {
                   { label: "SECS", val: countdown.seconds },
                 ].map((t) => (
                   <div key={t.label} className="bg-black border border-zinc-800 rounded-xl px-3.5 py-2 text-center min-w-[62px]">
-                    <span className="text-xl sm:text-2xl font-black text-red-500 block leading-none font-display">
+                    <span className="text-xl sm:text-2xl font-black text-yellow-400 block leading-none font-display">
                       {String(t.val).padStart(2, "0")}
                     </span>
                     <span className="text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{t.label}</span>
@@ -341,7 +341,7 @@ export default function Index() {
       {/* ========== WHY CHOOSE ASH VAPERS ========== */}
       <section className="container mx-auto px-4 py-16">
         <div className="text-center max-w-xl mx-auto mb-12">
-          <span className="text-xs font-bold text-red-500 uppercase tracking-widest">The Standard</span>
+          <span className="text-xs font-bold text-yellow-400 uppercase tracking-widest">The Standard</span>
           <h2 className="text-2xl sm:text-4xl font-black uppercase text-white mt-1 font-display">
             Why Ash Vapers
           </h2>
@@ -354,9 +354,9 @@ export default function Index() {
           {whyUs.map((item) => (
             <div
               key={item.title}
-              className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 hover:border-red-600/70 transition-all text-left shadow-md"
+              className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 hover:border-yellow-400/70 transition-all text-left shadow-md"
             >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-950/50 text-red-500 border border-red-900/50">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-950/40 text-yellow-400 border border-yellow-800/40">
                 <item.icon className="h-6 w-6" />
               </div>
               <h3 className="text-sm font-bold text-white mb-1.5">{item.title}</h3>
@@ -389,9 +389,9 @@ export default function Index() {
       </section>
 
       {/* ========== COMPLIANCE AGE WARNING ========== */}
-      <section className="bg-red-950/40 border-y border-red-900/40 py-4 px-4 text-center">
+      <section className="bg-yellow-950/20 border-y border-yellow-800/30 py-4 px-4 text-center">
         <div className="container mx-auto max-w-3xl">
-          <p className="text-xs sm:text-sm font-bold text-red-400 leading-relaxed">
+          <p className="text-xs sm:text-sm font-bold text-yellow-400 leading-relaxed">
             ⚠️ <strong>AGE RESTRICTION:</strong> Electronic nicotine delivery systems are intended strictly for adult smokers aged 21 and older. We do not sell to minors.
           </p>
         </div>
@@ -419,15 +419,15 @@ export default function Index() {
             <div>
               <h4 className="text-xs font-black uppercase tracking-widest text-white mb-4">Catalog</h4>
               <ul className="space-y-2 text-xs text-zinc-400 font-semibold">
-                <li><Link to="/products" className="hover:text-red-500 transition-colors">All Hardware</Link></li>
+                <li><Link to="/products" className="hover:text-yellow-400 transition-colors">All Hardware</Link></li>
                 {categories.slice(0, 4).map((c) => (
                   <li key={c.id}>
-                    <Link to={`/products?category=${c.id}`} className="hover:text-red-500 transition-colors">
+                    <Link to={`/products?category=${c.id}`} className="hover:text-yellow-400 transition-colors">
                       {c.name}
                     </Link>
                   </li>
                 ))}
-                <li><Link to="/orders" className="hover:text-red-500 transition-colors">Track Your Order</Link></li>
+                <li><Link to="/orders" className="hover:text-yellow-400 transition-colors">Track Your Order</Link></li>
               </ul>
             </div>
 
@@ -455,7 +455,7 @@ export default function Index() {
                   <div className="flex items-center gap-1 text-xs font-bold text-emerald-400">
                     <BadgeCheck className="h-4 w-4" /> 100% Genuine Pods
                   </div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-red-400">
+                  <div className="flex items-center gap-1 text-xs font-bold text-yellow-400">
                     <Shield className="h-4 w-4" /> 21+ Verified
                   </div>
                   <span className="text-[11px] text-zinc-400 font-medium block">Manufacturer Scratch Codes</span>

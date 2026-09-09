@@ -115,7 +115,7 @@ export default function Navbar() {
           <img
             src={isLanding ? "/logo-white-transparent.png" : "/logo-transparent.png"}
             alt="Ash Vapor"
-            className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            className="h-14 sm:h-16 md:h-18 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
           />
         </Link>
 
@@ -124,7 +124,7 @@ export default function Navbar() {
           <Link
             to="/products"
             className={`text-xs font-bold tracking-widest uppercase transition-colors ${
-              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+              isLanding ? "text-white/80 hover:text-yellow-400" : "text-black hover:text-red-600"
             }`}
           >
             New Arrivals
@@ -132,7 +132,7 @@ export default function Navbar() {
           <Link
             to="/products?cat=E-Liquids"
             className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
-              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+              isLanding ? "text-white/80 hover:text-yellow-400" : "text-black hover:text-red-600"
             }`}
           >
             <span>E-Liquids</span>
@@ -141,7 +141,7 @@ export default function Navbar() {
           <Link
             to="/products?cat=Pods"
             className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
-              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+              isLanding ? "text-white/80 hover:text-yellow-400" : "text-black hover:text-red-600"
             }`}
           >
             <span>Vapes</span>
@@ -150,7 +150,7 @@ export default function Navbar() {
           <Link
             to="/products?cat=Disposable+Vapes"
             className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
-              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+              isLanding ? "text-white/80 hover:text-yellow-400" : "text-black hover:text-red-600"
             }`}
           >
             <span>Disposables</span>
@@ -159,7 +159,7 @@ export default function Navbar() {
           <Link
             to="/orders"
             className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
-              isLanding ? "text-white/80 hover:text-white" : "text-black hover:text-red-600"
+              isLanding ? "text-white/80 hover:text-yellow-400" : "text-black hover:text-red-600"
             }`}
           >
             <span>Track Order</span>
@@ -172,7 +172,7 @@ export default function Navbar() {
           <button
             onClick={() => setSearchOpen(!searchOpen)}
             className={`p-1 transition-colors ${
-              isLanding ? "text-white/90 hover:text-red-500" : "text-black hover:text-red-600"
+              isLanding ? "text-white/90 hover:text-yellow-400" : "text-black hover:text-red-600"
             }`}
             title="Search products"
           >
@@ -184,7 +184,7 @@ export default function Navbar() {
             <button
               onClick={handleLogout}
               className={`p-1 transition-colors ${
-                isLanding ? "text-white/90 hover:text-red-500" : "text-black hover:text-red-600"
+                isLanding ? "text-white/90 hover:text-yellow-400" : "text-black hover:text-red-600"
               }`}
               title="Sign Out"
             >
@@ -194,7 +194,7 @@ export default function Navbar() {
             <Link
               to="/auth"
               className={`p-1 transition-colors ${
-                isLanding ? "text-white/90 hover:text-red-500" : "text-black hover:text-red-600"
+                isLanding ? "text-white/90 hover:text-yellow-400" : "text-black hover:text-red-600"
               }`}
               title="Account"
             >
@@ -206,13 +206,15 @@ export default function Navbar() {
           <button
             onClick={toggleCart}
             className={`relative p-1 transition-colors ${
-              isLanding ? "text-white/90 hover:text-red-500" : "text-black hover:text-red-600"
+              isLanding ? "text-white/90 hover:text-yellow-400" : "text-black hover:text-red-600"
             }`}
             title="Cart"
           >
             <ShoppingBag className="h-6 w-6" />
             {count > 0 && (
-              <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white shadow-sm">
+              <span className={`absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-black shadow-sm ${
+                isLanding ? "bg-yellow-400 text-black" : "bg-red-600 text-white font-bold"
+              }`}>
                 {count}
               </span>
             )}
@@ -240,11 +242,18 @@ export default function Navbar() {
               autoFocus
               className={`flex-1 rounded-full px-4 py-2 text-sm focus:outline-none ${
                 isLanding
-                  ? "bg-zinc-900 border border-white/20 text-white placeholder:text-gray-500 focus:border-red-500"
+                  ? "bg-zinc-900 border border-white/20 text-white placeholder:text-gray-500 focus:border-yellow-400"
                   : "bg-white border border-gray-300 text-black focus:border-red-600"
               }`}
             />
-            <Button type="submit" className="rounded-full bg-red-600 hover:bg-red-700 text-white text-xs px-5 font-bold">
+            <Button
+              type="submit"
+              className={`rounded-full text-xs px-5 font-bold ${
+                isLanding
+                  ? "bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              }`}
+            >
               Search
             </Button>
           </form>
@@ -257,7 +266,7 @@ export default function Navbar() {
           <Link
             to="/products"
             className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
-              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+              isLanding ? "border-white/10 hover:text-yellow-400" : "border-gray-100 hover:text-red-600"
             }`}
             onClick={() => setMenuOpen(false)}
           >
@@ -266,7 +275,7 @@ export default function Navbar() {
           <Link
             to="/products?cat=E-Liquids"
             className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
-              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+              isLanding ? "border-white/10 hover:text-yellow-400" : "border-gray-100 hover:text-red-600"
             }`}
             onClick={() => setMenuOpen(false)}
           >
@@ -275,7 +284,7 @@ export default function Navbar() {
           <Link
             to="/products?cat=Pods"
             className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
-              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+              isLanding ? "border-white/10 hover:text-yellow-400" : "border-gray-100 hover:text-red-600"
             }`}
             onClick={() => setMenuOpen(false)}
           >
@@ -284,7 +293,7 @@ export default function Navbar() {
           <Link
             to="/products?cat=Disposable+Vapes"
             className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
-              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+              isLanding ? "border-white/10 hover:text-yellow-400" : "border-gray-100 hover:text-red-600"
             }`}
             onClick={() => setMenuOpen(false)}
           >
@@ -293,7 +302,7 @@ export default function Navbar() {
           <Link
             to="/orders"
             className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
-              isLanding ? "border-white/10 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+              isLanding ? "border-white/10 hover:text-yellow-400" : "border-gray-100 hover:text-red-600"
             }`}
             onClick={() => setMenuOpen(false)}
           >
@@ -302,7 +311,9 @@ export default function Navbar() {
           {!user && (
             <Link
               to="/auth"
-              className="block text-sm font-bold uppercase tracking-wider text-red-500 py-2"
+              className={`block text-sm font-bold uppercase tracking-wider py-2 ${
+                isLanding ? "text-yellow-400 hover:underline" : "text-red-500"
+              }`}
               onClick={() => setMenuOpen(false)}
             >
               Sign In to Account

@@ -33,7 +33,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
   if (dark) {
     return (
       <div
-        className="group card-hover rounded-xl border border-zinc-800 bg-zinc-900/90 overflow-hidden shadow-md hover:shadow-2xl hover:border-red-600/80 cursor-pointer flex flex-col justify-between transition-all duration-300"
+        className="group card-hover rounded-xl border border-zinc-800 bg-zinc-900/90 overflow-hidden shadow-md hover:shadow-2xl hover:border-yellow-400/80 cursor-pointer flex flex-col justify-between transition-all duration-300"
         onClick={() => navigate(`/product/${id}`)}
       >
         <div className="aspect-square overflow-hidden bg-black relative border-b border-zinc-800/80 flex items-center justify-center p-4">
@@ -57,7 +57,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
               </span>
             )}
             {stock <= 3 && stock > 0 && (
-              <span className="bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-sm">
+              <span className="bg-yellow-400 text-black text-[9px] font-black px-2 py-0.5 rounded shadow-sm">
                 Only {stock} left!
               </span>
             )}
@@ -72,7 +72,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
 
         <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
           <div>
-            <h3 className="font-bold text-white line-clamp-2 text-xs sm:text-sm group-hover:text-red-400 transition-colors leading-snug">
+            <h3 className="font-bold text-white line-clamp-2 text-xs sm:text-sm group-hover:text-yellow-400 transition-colors leading-snug">
               {name}
             </h3>
             <p className="text-[10px] text-zinc-500 font-mono mt-1 font-semibold">SKU: {sku}</p>
@@ -91,7 +91,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
                   In Stock
                 </span>
               ) : (
-                <span className="text-[10px] font-bold text-red-400 bg-red-950/40 px-2 py-0.5 rounded border border-red-800/50">
+                <span className="text-[10px] font-bold text-yellow-400 bg-yellow-950/40 px-2 py-0.5 rounded border border-yellow-800/50">
                   Sold Out
                 </span>
               )}
@@ -99,7 +99,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
 
             <div className="flex flex-col sm:flex-row gap-1.5 pt-1">
               <Button
-                className="flex-1 bg-red-600 hover:bg-red-500 text-white text-xs h-9 font-bold rounded shadow-sm transition-all"
+                className="flex-1 bg-yellow-400 hover:bg-yellow-300 text-black text-xs h-9 font-black rounded shadow-sm transition-all"
                 size="sm"
                 disabled={stock <= 0}
                 onClick={(e) => {
