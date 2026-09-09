@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, LogOut, Shield, Menu, X, Flame } from "lucide-react";
+import { ShoppingBag, User, LogOut, Search, ChevronDown, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +13,8 @@ export default function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -24,11 +26,9 @@ export default function Navbar() {
   }, []);
 
   const refreshData = async () => {
-    // Check local admin state
     if (isAdminLoggedIn()) {
       setIsAdmin(true);
     }
-
     try {
       const cats = await getCategories();
       if (cats && cats.length > 0) {
@@ -68,136 +68,187 @@ export default function Navbar() {
     navigate("/");
   };
 
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
+
   const count = itemCount();
 
   return (
-    <nav className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200" : "bg-white border-b border-gray-200"}`}>
-      {/* Top VapeMall-style announcement bar */}
-      <div className="bg-red-600 text-white py-1.5 px-3 text-center text-xs font-semibold flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
+    <nav className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100" : "bg-white border-b border-gray-100"}`}>
+      {/* Top Black Announcement Bar (Matching VapeMall) */}
+      <div className="bg-black text-white py-2 px-4 text-center text-xs sm:text-sm font-medium">
         <a
           href="https://wa.me/923104703131"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1 font-bold text-white hover:underline transition-all"
+          className="inline-flex items-center gap-1.5 hover:underline transition-all text-white"
         >
-          <Flame className="h-3.5 w-3.5 text-yellow-300 animate-pulse" />
-          <span>Order Online or WhatsApp Us: 03104703131</span>
+          <span>Order Online or Call or WhatsApp Us at 03104703131</span>
+          <span className="font-bold text-sm">→</span>
         </a>
-        <span className="text-white/60 hidden sm:inline">•</span>
-        <span className="hidden sm:inline">⚡ Same-Day Express Dispatch Across Pakistan</span>
-        <span className="text-white/60">•</span>
-        <span className="bg-black/20 px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider">Cash on Delivery</span>
-        <span className="text-white/60 hidden md:inline">•</span>
-        <span className="hidden md:inline font-bold">21+ Adults Only</span>
       </div>
 
-      <div className="container mx-auto flex h-16 items-center justify-between px-3 sm:px-4">
-        {/* Brand Logo - Ash Vapor */}
-        <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
+      <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6">
+        {/* Brand Logo - Left Aligned */}
+        <Link to="/" className="flex items-center gap-2 shrink-0 group">
           <img
-            src="/logo-badge-transparent.png"
+            src="/logo-transparent.png"
             alt="Ash Vapor"
-            className="h-10 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
           />
-          <div className="flex flex-col">
-            <div className="flex items-center leading-none">
-              <span className="font-display text-xl sm:text-2xl font-black tracking-tight text-black">
-                Ash<span className="text-red-600">Vapor</span>
-              </span>
-              <span className="ml-1.5 px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider bg-red-100 text-red-600 border border-red-200">
-                Shop
-              </span>
-            </div>
-            <span className="text-[10px] tracking-wide text-gray-800 uppercase font-semibold">
-              Best Vape Price in Pakistan
-            </span>
-          </div>
         </Link>
 
-        {/* Desktop Product Links - Pure Black Font */}
-        <div className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-bold text-black hover:text-red-600 transition-colors">
-            Home
+        {/* Desktop Navigation Links with Dropdown Carets */}
+        <div className="hidden lg:flex items-center gap-7">
+          <Link to="/products" className="text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+            New Arrivals
           </Link>
-          <Link to="/products" className="text-sm font-bold text-black hover:text-red-600 transition-colors">
-            All Vapes
+          <Link to="/products?cat=E-Liquids" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+            <span>E-Liquids</span>
+            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
           </Link>
-          {categories.slice(0, 4).map((c) => (
-            <Link
-              key={c.id}
-              to={`/products?category=${c.id}`}
-              className="text-sm font-bold text-black hover:text-red-600 transition-colors whitespace-nowrap"
-            >
-              {c.name}
-            </Link>
-          ))}
-          <Link to="/orders" className="text-sm font-bold text-black hover:text-red-600 transition-colors">
-            Track Order
+          <Link to="/products?cat=Pods" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+            <span>Vapes</span>
+            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+          </Link>
+          <Link to="/products?cat=Disposable+Vapes" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+            <span>Disposables</span>
+            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+          </Link>
+          <Link to="/products" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+            <span>Accessories</span>
+            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+          </Link>
+          <Link to="/orders" className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#F8BE67] transition-colors">
+            <span>Locations</span>
+            <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
           </Link>
         </div>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-2">
-          {/* Cart button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={toggleCart}
-            className="relative border-gray-300 hover:border-red-600 hover:text-red-600 text-black font-bold h-10 px-3 bg-gray-50 flex items-center gap-2"
+        {/* Right Action Icons: Search, User, Cart Bag */}
+        <div className="flex items-center gap-4 sm:gap-5">
+          {/* Search icon button */}
+          <button
+            onClick={() => setSearchOpen(!searchOpen)}
+            className="text-black hover:text-[#F8BE67] transition-colors p-1"
+            title="Search products"
           >
-            <ShoppingCart className="h-4 w-4 text-black" />
-            <span className="text-xs hidden sm:inline text-black font-bold">Cart</span>
+            <Search className="h-5 w-5" />
+          </button>
+
+          {/* User Account icon */}
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="text-black hover:text-red-600 transition-colors p-1"
+              title="Sign Out"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          ) : (
+            <Link
+              to="/auth"
+              className="text-black hover:text-[#F8BE67] transition-colors p-1"
+              title="Account"
+            >
+              <User className="h-5 w-5" />
+            </Link>
+          )}
+
+          {/* Shopping Bag with black circular badge */}
+          <button
+            onClick={toggleCart}
+            className="relative p-1 text-black hover:text-[#F8BE67] transition-colors"
+            title="Cart"
+          >
+            <ShoppingBag className="h-6 w-6" />
             {count > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[11px] font-bold text-white shadow-sm">
+              <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white shadow-sm">
                 {count}
               </span>
             )}
-          </Button>
-
-          {user ? (
-            <Button variant="ghost" size="icon" onClick={handleLogout} className="text-gray-700 hover:text-red-600 h-9 w-9" title="Sign Out">
-              <LogOut className="h-4 w-4" />
-            </Button>
-          ) : (
-            <Button size="sm" variant="outline" className="border-gray-300 text-black hover:border-red-600 hover:text-red-600 font-bold text-xs h-10 px-3 hidden sm:inline-flex bg-white" asChild>
-              <Link to="/auth">
-                <User className="h-3.5 w-3.5 mr-1 text-red-600" /> Sign In
-              </Link>
-            </Button>
-          )}
+          </button>
 
           {/* Mobile menu toggle */}
-          <Button variant="outline" size="icon" className="md:hidden h-10 w-10 border-gray-300 text-black" onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
+          <button
+            className="lg:hidden p-1 text-black"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Expandable Search Input Bar */}
+      {searchOpen && (
+        <div className="border-t border-gray-100 bg-gray-50 px-4 py-3 shadow-inner">
+          <form onSubmit={handleSearchSubmit} className="container mx-auto max-w-xl flex gap-2">
+            <input
+              type="text"
+              placeholder="Search products, brands (e.g. Caliburn, Crown Bar, Geek Bar)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              autoFocus
+              className="flex-1 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:border-[#F8BE67]"
+            />
+            <Button type="submit" className="rounded-full bg-black hover:bg-gray-800 text-white text-xs px-5 font-bold">
+              Search
+            </Button>
+          </form>
+        </div>
+      )}
+
+      {/* Mobile Menu Dropdown */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 px-4 py-4 space-y-3 shadow-lg">
-          <Link to="/" className="block text-sm font-bold text-black hover:text-red-600 py-1" onClick={() => setMenuOpen(false)}>
-            Home
+        <div className="lg:hidden bg-white border-t border-gray-100 px-6 py-5 space-y-3 shadow-lg">
+          <Link
+            to="/products"
+            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            onClick={() => setMenuOpen(false)}
+          >
+            New Arrivals
           </Link>
-          <Link to="/products" className="block text-sm font-bold text-black hover:text-red-600 py-1" onClick={() => setMenuOpen(false)}>
-            All Vapes
+          <Link
+            to="/products?cat=E-Liquids"
+            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            onClick={() => setMenuOpen(false)}
+          >
+            E-Liquids
           </Link>
-          {categories.map((c) => (
-            <Link
-              key={c.id}
-              to={`/products?category=${c.id}`}
-              className="block text-sm font-bold text-black hover:text-red-600 py-1"
-              onClick={() => setMenuOpen(false)}
-            >
-              {c.name}
-            </Link>
-          ))}
-          <Link to="/orders" className="block text-sm font-bold text-black hover:text-red-600 py-1" onClick={() => setMenuOpen(false)}>
-            Track Order
+          <Link
+            to="/products?cat=Pods"
+            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            onClick={() => setMenuOpen(false)}
+          >
+            Vapes
+          </Link>
+          <Link
+            to="/products?cat=Disposable+Vapes"
+            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            onClick={() => setMenuOpen(false)}
+          >
+            Disposables
+          </Link>
+          <Link
+            to="/orders"
+            className="block text-base font-bold text-black hover:text-[#F8BE67] py-1 border-b border-gray-100"
+            onClick={() => setMenuOpen(false)}
+          >
+            Track Order & Locations
           </Link>
           {!user && (
-            <Link to="/auth" className="block text-sm font-bold text-red-600 py-1" onClick={() => setMenuOpen(false)}>
-              Customer Sign In
+            <Link
+              to="/auth"
+              className="block text-base font-bold text-[#F8BE67] py-1"
+              onClick={() => setMenuOpen(false)}
+            >
+              Sign In to Account
             </Link>
           )}
         </div>

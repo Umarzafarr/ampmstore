@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight, Zap, Shield, Truck, Sparkles,
   Timer, CreditCard, Flame,
-  BadgeCheck, RefreshCw, CheckCircle2, ShoppingBag, MessageCircle, Layers, PhoneCall
+  BadgeCheck, RefreshCw, CheckCircle2, ShoppingBag, MessageCircle, Layers, PhoneCall,
+  ChevronLeft, ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/ProductCard";
@@ -122,56 +123,94 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-white text-black selection:bg-red-100 selection:text-red-900">
-      {/* ========== HERO BANNER (VAPEMALL PK STYLE) ========== */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-gray-50 via-white to-white pt-8 pb-14 border-b border-gray-200">
-        <div className="container relative mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-5">
-            {/* User Logo Display - Enlarged */}
-            <div className="flex justify-center pt-2 pb-2">
-              <div className="relative group inline-block">
-                <img
-                  src="/logo-transparent.png"
-                  alt="Ash Vapor"
-                  className="h-44 sm:h-56 md:h-64 lg:h-72 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-sm"
-                />
+      {/* ========== HERO BANNER (VAPEMALL PK EXACT VISUALIZATION) ========== */}
+      <section className="relative overflow-hidden bg-white pt-10 pb-14 border-b border-gray-100">
+        <div className="container relative mx-auto px-4 text-center">
+          {/* Golden-amber Outline Pill (from screenshot) */}
+          <div className="inline-flex items-center justify-center rounded-full border-2 border-[#F7B74F] px-6 sm:px-8 py-2 text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#F7B74F] mb-6 shadow-sm">
+            100% ORIGINAL VAPES – NATIONWIDE DELIVERY
+          </div>
+
+          {/* Massive Golden-amber Headline (from screenshot) */}
+          <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase tracking-tight text-[#F8BE67] leading-[0.92] max-w-5xl mx-auto font-display drop-shadow-sm">
+            BEST VAPE PRICE IN<br />PAKISTAN
+          </h1>
+
+          {/* Subtitle (from screenshot) */}
+          <p className="text-base sm:text-lg md:text-xl font-medium text-black max-w-3xl mx-auto mt-6 leading-relaxed">
+            Authentic vape devices designed for richer flavor, long-lasting performance, and a smoother vaping experience every day.
+          </p>
+
+          {/* Hero Featured Showcase Card (Matching the rounded dark card in the screenshot) */}
+          <div className="relative mt-12 max-w-5xl mx-auto">
+            <div className="relative rounded-3xl bg-gradient-to-r from-zinc-950 via-neutral-900 to-amber-950 border border-amber-500/30 p-6 sm:p-10 md:p-12 text-left text-white overflow-hidden shadow-2xl">
+              {/* Warm golden ambient glow */}
+              <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-amber-500/20 blur-[100px] pointer-events-none" />
+              <div className="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-yellow-600/15 blur-[100px] pointer-events-none" />
+
+              <div className="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                    <Sparkles className="h-3.5 w-3.5" /> Featured Drop • High Puff Series
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className="text-xs uppercase font-extrabold tracking-widest text-amber-400 block">
+                      CROWN BAR BY AL FAKHER
+                    </span>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight text-white uppercase">
+                      60K E-HOSE X DISPOSABLE
+                    </h2>
+                  </div>
+
+                  <p className="text-sm text-gray-300 max-w-md leading-relaxed">
+                    Massive 60,000 puffs with dual mesh coils, rechargeable Type-C battery, digital battery & juice monitor, and direct-to-lung hookah flavor.
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <Button size="lg" className="bg-[#F8BE67] hover:bg-[#F7B74F] text-black font-black px-7 h-12 text-sm shadow-lg" asChild>
+                      <Link to="/products">
+                        Shop Collection <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" className="border-amber-400/60 bg-white/10 hover:bg-white/20 text-white font-bold h-12 px-6 text-sm" asChild>
+                      <a href="https://wa.me/923104703131?text=Hello%20Ash%20Vapor!%20I%20want%20to%20order%20the%20Crown%20Bar%2060K%20Disposable." target="_blank" rel="noreferrer">
+                        <MessageCircle className="mr-2 h-4 w-4 text-emerald-400" /> WhatsApp Order
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Right side: Device preview */}
+                <div className="relative flex items-center justify-center">
+                  <div className="relative w-full max-w-xs aspect-square flex items-center justify-center">
+                    <div className="absolute inset-0 bg-amber-500/20 rounded-full blur-2xl pointer-events-none" />
+                    <img
+                      src="/logo-transparent.png"
+                      alt="Ash Vapor Device"
+                      className="h-60 sm:h-72 w-auto object-contain relative z-10 drop-shadow-[0_15px_30px_rgba(248,190,103,0.35)] transition-transform hover:scale-105 duration-300"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Main Headline - Bold Black Font */}
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-black leading-[1.1]">
-              Best Vape Price <span className="text-red-600">in Pakistan</span>
-            </h1>
-
-            {/* CTA Buttons - VapeMall Style */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-black px-8 h-12 text-sm sm:text-base shadow-md transition-all duration-200 hover:shadow-lg" asChild>
-                <Link to="/products">
-                  Shop All Vapes <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" className="border-gray-300 hover:border-red-600 hover:text-red-600 text-black bg-white font-bold h-12 px-6 text-sm shadow-sm" asChild>
-                <Link to="/products?cat=Disposable+Vapes">
-                  <Flame className="mr-2 h-4 w-4 text-red-600" /> Disposables
-                </Link>
-              </Button>
-              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 px-6 text-sm shadow-md transition-all duration-200" asChild>
-                <a href="https://wa.me/923104703131" target="_blank" rel="noreferrer">
-                  <MessageCircle className="mr-2 h-4 w-4" /> WhatsApp Order
-                </a>
-              </Button>
-            </div>
-
-            {/* Trust Highlights */}
-            <div className="pt-4 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs text-gray-800 font-semibold">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" /> 100% Authentic Guaranteed
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Truck className="h-4 w-4 text-red-600" /> Same-Day Dispatch
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CreditCard className="h-4 w-4 text-black" /> Cash on Delivery (COD)
-              </span>
+            {/* Circular navigation arrows matching screenshot */}
+            <div className="flex items-center justify-between absolute -bottom-5 left-6 right-6 z-20 pointer-events-none">
+              <Link
+                to="/products"
+                className="pointer-events-auto h-11 w-11 rounded-full border-2 border-[#F7B74F] bg-white text-black flex items-center justify-center hover:bg-[#F8BE67] hover:text-black shadow-md transition-all"
+                title="Previous Featured"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Link>
+              <Link
+                to="/products"
+                className="pointer-events-auto h-11 w-11 rounded-full border-2 border-[#F7B74F] bg-white text-black flex items-center justify-center hover:bg-[#F8BE67] hover:text-black shadow-md transition-all"
+                title="Next Featured"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Link>
             </div>
           </div>
         </div>
