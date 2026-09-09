@@ -11,7 +11,7 @@ export default function Products() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const selectedCategory = searchParams.get("category") || "all";
+  const catParam = searchParams.get("category") || searchParams.get("cat") || "all";
 
   useEffect(() => {
     getCategories().then(setCategories);
@@ -20,14 +20,19 @@ export default function Products() {
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      const matchCat = selectedCategory === "all" || p.category_id === selectedCategory;
+      const matchCat =
+        catParam === "all" ||
+        p.category_id === catParam ||
+        (p.categories?.name && p.categories.name.toLowerCase().includes(catParam.toLowerCase())) ||
+        (categories.find(c => c.name.toLowerCase().includes(catParam.toLowerCase()))?.id === p.category_id);
+
       const matchSearch =
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchCat && matchSearch;
     });
-  }, [products, selectedCategory, searchQuery]);
+  }, [products, catParam, searchQuery, categories]);
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">

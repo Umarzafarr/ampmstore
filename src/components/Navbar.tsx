@@ -62,15 +62,23 @@ export default function Navbar() {
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "glass shadow-xl border-b border-border/70" : "bg-background/80 backdrop-blur-md border-b border-border/40"}`}>
-      {/* Top micro bar for age disclaimer & shipping */}
-      <div className="bg-primary/10 border-b border-primary/20 py-1 px-3 text-center text-[10px] sm:text-xs font-medium text-foreground/80 flex items-center justify-center gap-3">
-        <span className="inline-flex items-center gap-1 font-bold text-primary">
-          <Flame className="h-3 w-3 text-primary animate-pulse" /> 21+ ADULTS ONLY
-        </span>
-        <span className="hidden sm:inline text-muted-foreground">•</span>
-        <span className="hidden sm:inline text-muted-foreground">Authentic Pods & Nic Salts</span>
+      {/* Top micro bar for age disclaimer, WhatsApp hotline & dispatch */}
+      <div className="bg-primary/10 border-b border-primary/20 py-1.5 px-3 text-center text-[10px] sm:text-xs font-medium text-foreground/85 flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
+        <a
+          href="https://wa.me/923104703131"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
+        >
+          <Flame className="h-3 w-3 text-emerald-400 animate-pulse" />
+          <span>WhatsApp Orders: 03104703131</span>
+        </a>
         <span className="text-muted-foreground">•</span>
-        <span className="text-foreground">⚡ Same-Day Dispatch Across Pakistan</span>
+        <span className="font-bold text-primary">21+ ADULTS ONLY</span>
+        <span className="hidden md:inline text-muted-foreground">•</span>
+        <span className="hidden md:inline text-foreground/80">⚡ Same-Day Dispatch Across Pakistan</span>
+        <span className="hidden sm:inline text-muted-foreground">•</span>
+        <span className="hidden sm:inline text-accent font-semibold">Cash on Delivery</span>
       </div>
 
       <div className="container mx-auto flex h-16 items-center justify-between px-3 sm:px-4">
@@ -96,13 +104,22 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Links */}
+        {/* Desktop Product Links */}
         <div className="hidden md:flex items-center gap-6">
           <Link to="/" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
             <span>Home</span>
           </Link>
           <Link to="/products" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-            <span>Pods & Salts</span>
+            <span>All Vapes</span>
+          </Link>
+          <Link to="/products?cat=Pod+Systems" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            <span>Pod Kits</span>
+          </Link>
+          <Link to="/products?cat=Disposable+Vapes" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            <span>Disposables</span>
+          </Link>
+          <Link to="/products?cat=Nicotine+Salts" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            <span>Nic Salts</span>
           </Link>
           <Link to="/orders" className="story-link text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
             <span>Track Order</span>
@@ -112,7 +129,12 @@ export default function Navbar() {
         {/* Right Actions */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Cart button */}
-          <Button variant="ghost" size="icon" onClick={toggleCart} className="relative hover:text-primary hover-scale h-9 w-9 sm:h-10 sm:w-10 border border-border/50 bg-secondary/30">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleCart}
+            className="relative hover:text-primary hover-scale h-9 w-9 sm:h-10 sm:w-10 border border-border/50 bg-secondary/30"
+          >
             <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
             {count > 0 && (
               <span className="absolute -right-1 -top-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-primary text-[9px] sm:text-[11px] font-bold text-white glow-purple">
@@ -121,24 +143,7 @@ export default function Navbar() {
             )}
           </Button>
 
-          {/* Manager portal badge button */}
-          <Button
-            variant={isAdmin ? "default" : "outline"}
-            size="sm"
-            asChild
-            className={`h-9 px-2.5 text-xs font-semibold ${
-              isAdmin
-                ? "bg-primary text-primary-foreground btn-glow border-none"
-                : "border-border/60 hover:border-primary/50 text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Link to="/admin" title="Manager Portal">
-              <Shield className="h-3.5 w-3.5 mr-1" />
-              <span className="hidden sm:inline">{isAdmin ? "Manager Portal" : "Manager"}</span>
-            </Link>
-          </Button>
-
-          {user || isAdmin ? (
+          {user ? (
             <Button variant="ghost" size="icon" onClick={handleLogout} className="hover:text-destructive hover-scale h-9 w-9" title="Sign Out">
               <LogOut className="h-4 w-4" />
             </Button>
@@ -164,15 +169,21 @@ export default function Navbar() {
             Home
           </Link>
           <Link to="/products" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
-            Pods & Salts
+            All Vapes
+          </Link>
+          <Link to="/products?cat=Pod+Systems" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
+            Pod Kits
+          </Link>
+          <Link to="/products?cat=Disposable+Vapes" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
+            Disposables
+          </Link>
+          <Link to="/products?cat=Nicotine+Salts" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
+            Nic Salts
           </Link>
           <Link to="/orders" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
             Track Order
           </Link>
-          <Link to="/admin" className="block text-sm font-medium text-primary hover:underline" onClick={() => setMenuOpen(false)}>
-            Manager Portal ({isAdmin ? "Logged In" : "Sign In"})
-          </Link>
-          {!user && !isAdmin && (
+          {!user && (
             <Link to="/auth" className="block text-sm font-medium text-muted-foreground hover:text-primary" onClick={() => setMenuOpen(false)}>
               Customer Sign In
             </Link>

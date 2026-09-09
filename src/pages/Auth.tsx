@@ -28,7 +28,7 @@ export default function Auth() {
       setAdminLoggedIn(true);
       toast({ title: "Manager Authenticated", description: "Logged in as Administrator (am/pm)" });
       setLoading(false);
-      navigate("/admin");
+      navigate("/manager");
       return;
     }
 
@@ -45,7 +45,7 @@ export default function Auth() {
           });
           if (isAdmin) setAdminLoggedIn(true);
           toast({ title: "Welcome back!" });
-          navigate(isAdmin ? "/admin" : (redirectTo || "/"));
+          navigate(isAdmin ? "/manager" : (redirectTo || "/"));
         }
       } else {
         const { error } = await supabase.auth.signUp({
