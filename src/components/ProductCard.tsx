@@ -33,10 +33,10 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
   if (dark) {
     return (
       <div
-        className="group card-hover rounded-xl border border-zinc-800 bg-zinc-900/90 overflow-hidden shadow-md hover:shadow-2xl hover:border-yellow-400/80 cursor-pointer flex flex-col justify-between transition-all duration-300"
+        className="group card-hover rounded-xl border border-neutral-900 bg-[#0a0a0a] overflow-hidden shadow-md hover:shadow-[0_0_30px_rgba(239,68,68,0.25)] hover:border-red-600/80 cursor-pointer flex flex-col justify-between transition-all duration-300"
         onClick={() => navigate(`/product/${id}`)}
       >
-        <div className="aspect-square overflow-hidden bg-black relative border-b border-zinc-800/80 flex items-center justify-center p-4">
+        <div className="aspect-square overflow-hidden bg-black relative border-b border-neutral-900 flex items-center justify-center p-4">
           {image_url ? (
             <img
               src={image_url}
@@ -52,19 +52,19 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
 
           <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
             {categories?.name && (
-              <span className="bg-zinc-800/95 text-[10px] font-bold text-white px-2 py-0.5 rounded shadow-sm border border-zinc-700">
+              <span className="bg-black/90 text-[10px] font-bold text-white px-2 py-0.5 rounded shadow-sm border border-neutral-800">
                 {categories.name}
               </span>
             )}
             {stock <= 3 && stock > 0 && (
-              <span className="bg-yellow-400 text-black text-[9px] font-black px-2 py-0.5 rounded shadow-sm">
+              <span className="bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded shadow-[0_0_12px_rgba(239,68,68,0.6)]">
                 Only {stock} left!
               </span>
             )}
           </div>
 
           <div className="absolute top-2.5 right-2.5">
-            <span className="bg-emerald-950/60 text-emerald-400 text-[9px] font-extrabold px-2 py-0.5 rounded border border-emerald-800/60 flex items-center gap-0.5">
+            <span className="bg-emerald-950/70 text-emerald-400 text-[9px] font-extrabold px-2 py-0.5 rounded border border-emerald-800/70 flex items-center gap-0.5 shadow-sm">
               <Check className="h-2.5 w-2.5" /> Authentic
             </span>
           </div>
@@ -82,7 +82,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
             <div className="flex items-baseline justify-between mb-3">
               <div>
                 <span className="text-xs font-bold text-zinc-400 mr-1">PKR</span>
-                <span className="text-base sm:text-lg font-black text-white">
+                <span className="text-base sm:text-lg font-black text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.35)]">
                   {price.toLocaleString()}
                 </span>
               </div>
@@ -91,7 +91,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
                   In Stock
                 </span>
               ) : (
-                <span className="text-[10px] font-bold text-yellow-400 bg-yellow-950/40 px-2 py-0.5 rounded border border-yellow-800/50">
+                <span className="text-[10px] font-bold text-red-400 bg-red-950/50 px-2 py-0.5 rounded border border-red-800/60 shadow-[0_0_10px_rgba(239,68,68,0.3)]">
                   Sold Out
                 </span>
               )}
@@ -99,7 +99,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
 
             <div className="flex flex-col sm:flex-row gap-1.5 pt-1">
               <Button
-                className="flex-1 bg-yellow-400 hover:bg-yellow-300 text-black text-xs h-9 font-black rounded shadow-sm transition-all"
+                className="flex-1 bg-red-600 hover:bg-red-500 text-white text-xs h-9 font-black rounded shadow-[0_0_15px_rgba(239,68,68,0.45)] hover:shadow-[0_0_25px_rgba(239,68,68,0.7)] transition-all"
                 size="sm"
                 disabled={stock <= 0}
                 onClick={(e) => {
@@ -111,7 +111,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 text-xs h-9 bg-white hover:bg-zinc-200 text-black border-white font-bold rounded shadow-sm transition-all"
+                className="flex-1 text-xs h-9 bg-yellow-400 hover:bg-yellow-300 text-black border-yellow-400 font-black rounded shadow-[0_0_15px_rgba(250,204,21,0.3)] transition-all"
                 size="sm"
                 disabled={stock <= 0}
                 onClick={(e) => {
