@@ -87,13 +87,15 @@ export default function Index() {
   ];
 
   const displayedProducts = useMemo(() => {
-    if (selectedCategory === "all") return products;
+    if (selectedCategory === "all") return products.slice(0, 16);
     const catObj = categories.find((c) => c.id === selectedCategory);
-    return products.filter(
-      (p) =>
-        p.category_id === selectedCategory ||
-        (catObj && p.categories?.name && p.categories.name.toLowerCase() === catObj.name.toLowerCase())
-    );
+    return products
+      .filter(
+        (p) =>
+          p.category_id === selectedCategory ||
+          (catObj && p.categories?.name && p.categories.name.toLowerCase() === catObj.name.toLowerCase())
+      )
+      .slice(0, 16);
   }, [products, selectedCategory, categories]);
 
   return (

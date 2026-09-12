@@ -55,9 +55,48 @@ export interface Banner {
   created_at?: string;
 }
 
-// Zero placeholder data - completely clean initial states
-const INITIAL_CATEGORIES: Category[] = [];
-const INITIAL_PRODUCTS: Product[] = [];
+import initialProductsData from "@/data/products.json";
+
+// Clean initial categories matching VapeMall
+export const INITIAL_CATEGORIES: Category[] = [
+  {
+    id: "698d919a-273b-4a34-a27e-8a59bb3aefb7",
+    name: "Pod Kits",
+    description: "Refillable pod starter kits and smart compact systems"
+  },
+  {
+    id: "e6ab9c69-50aa-4752-804c-4a804e3ff234",
+    name: "Disposable Vapes",
+    description: "High-puff rechargeable smart disposables"
+  },
+  {
+    id: "cd3609cb-0b9e-4d88-b049-8093f1a250e3",
+    name: "E-Liquids & Nic Salts",
+    description: "Premium imported salt nicotine and freebase e-juices"
+  },
+  {
+    id: "148d0bae-5694-433a-a42c-83b6451e55bd",
+    name: "Coils & Cartridges",
+    description: "Replacement mesh coils and empty cartridges"
+  },
+  {
+    id: "cc492657-bbcb-4391-b8a9-70bbc05db619",
+    name: "Mod Kits & Devices",
+    description: "High-wattage box mods, dual battery devices, and advanced kits"
+  },
+  {
+    id: "a06c0cdb-3abd-4a4b-9310-03ab0ffc35c2",
+    name: "Tanks & Rebuildables",
+    description: "Sub-ohm tanks, RDAs, RTAs, cotton, and specialty coils"
+  },
+  {
+    id: "3d2d2d1c-c258-4098-84f8-3a9b2dfd04c3",
+    name: "Accessories & Hardware",
+    description: "High-drain batteries, fast chargers, lanyards, and tools"
+  }
+];
+
+const INITIAL_PRODUCTS: Product[] = initialProductsData as Product[];
 const INITIAL_BANNERS: Banner[] = [];
 const INITIAL_ORDERS: Order[] = [];
 
@@ -123,21 +162,30 @@ export function verifyAdminCredentials(user: string, pass: string): boolean {
 // ---------------- Products ----------------
 export async function getProducts(): Promise<Product[]> {
   try {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*, categories(name)")
-      .order("created_at", { ascending: false });
-    if (!error && data) {
-      saveLocal(KEY_PRODUCTS, data);
-      return data as Product[];
+    const [r1, r2, r3] = await Promise.all([
+      supabase.from("products").select("*, categories(name)").order("created_at", { ascending: false }).range(0, 999),
+      supabase.from("products").select("*, categories(name)").order("created_at", { ascending: false }).range(1000, 1999),
+      supabase.from("products").select("*, categories(name)").order("created_at", { ascending: false }).range(2000, 2999)
+    ]);
+    const all = [
+      ...(r1.data || []),
+      ...(r2.data || []),
+      ...(r3.data || [])
+    ];
+    if (all.length > 0) {
+      return all as Product[];
     }
   } catch (e) {
     console.warn("DB getProducts fetch:", e);
   }
-  return loadLocal<Product[]>(KEY_PRODUCTS, INITIAL_PRODUCTS);
+  return INITIAL_PRODUCTS;
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
+  // Instant in-memory lookup for fastest page transitions
+  const foundLocal = INITIAL_PRODUCTS.find((p) => p.id === id);
+  if (foundLocal) return foundLocal;
+
   try {
     const { data, error } = await supabase
       .from("products")
@@ -366,7 +414,7 @@ export async function addOrder(orderData: Omit<Order, "id" | "created_at">): Pro
       createdOrder = {
         ...order,
         order_items: orderData.order_items,
-      };
+      } as Order;
     }
   } catch (e) {
     console.warn("DB addOrder error:", e);

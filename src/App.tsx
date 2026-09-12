@@ -13,6 +13,7 @@ import Orders from "./pages/Orders";
 import Admin from "./pages/Admin";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
@@ -22,9 +23,10 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Navbar />
-        <CartSidebar />
-        <Routes>
+        <ErrorBoundary>
+          <Navbar />
+          <CartSidebar />
+          <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/products" element={<Products />} />
           <Route path="/auth" element={<Auth />} />
@@ -35,6 +37,7 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </ErrorBoundary>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

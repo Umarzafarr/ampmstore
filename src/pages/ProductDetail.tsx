@@ -18,40 +18,45 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (!id) return;
-    getProductById(id).then((data) => {
-      if (!data) {
-        navigate("/products");
-      } else {
+    setLoading(true);
+    getProductById(id)
+      .then((data) => {
         setProduct(data);
-      }
-      setLoading(false);
-    });
-  }, [id, navigate]);
+      })
+      .catch((err) => {
+        console.warn("Product fetch error:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
 
   const handleAdd = () => {
     if (!product) return;
+    const itemPrice = Number(product.price) || 0;
     for (let i = 0; i < quantity; i++) {
       addItem({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: itemPrice,
         image_url: product.image_url || null,
         sku: product.sku,
       });
     }
     toast({
       title: "Added to Cart",
-      description: `${quantity}x ${product.name} (PKR ${(product.price * quantity).toLocaleString()})`,
+      description: `${quantity}x ${product.name} (PKR ${(itemPrice * quantity).toLocaleString()})`,
     });
   };
 
   const handleBuyNow = () => {
     if (!product) return;
+    const itemPrice = Number(product.price) || 0;
     for (let i = 0; i < quantity; i++) {
       addItem({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: itemPrice,
         image_url: product.image_url || null,
         sku: product.sku,
       });
@@ -70,7 +75,31 @@ export default function ProductDetail() {
     );
   }
 
-  if (!product) return null;
+  if (!product) {
+    return (
+      <div className="flex min-h-[65vh] items-center justify-center p-6 bg-white text-black">
+        <div className="max-w-md w-full text-center space-y-6 bg-white p-8 rounded-3xl border border-gray-200 shadow-lg">
+          <div className="flex justify-center">
+            <div className="h-16 w-16 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center text-red-600">
+              <Flame className="h-8 w-8 text-red-600" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-black">Product Not Found</h2>
+            <p className="text-xs text-gray-600 font-medium">
+              The vape product you are looking for might have moved, been renamed, or is currently out of stock.
+            </p>
+          </div>
+          <Button
+            className="bg-red-600 hover:bg-red-700 text-white font-bold text-xs h-10 px-6 shadow-sm"
+            onClick={() => navigate("/products")}
+          >
+            Browse All Products
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-6 sm:py-10 max-w-6xl bg-white text-black">
@@ -175,7 +204,7 @@ export default function ProductDetail() {
                 </span>
                 <button
                   className="px-4 py-2.5 text-black hover:bg-gray-200 transition-colors font-bold text-base"
-                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                  onClick={() => setQuantity(Math.min(Math.max(product.stock || 50, 1), quantity + 1))}
                 >
                   +
                 </button>
@@ -203,7 +232,7 @@ export default function ProductDetail() {
             {/* WhatsApp Quick Order for this product */}
             <div>
               <a
-                href={`https://wa.me/923104703131?text=${encodeURIComponent(`Hello Ash Vapor! I want to order: ${product.name} (PKR ${product.price.toLocaleString()})`)}`}
+                href={`https://wa.me/923104703131?text=${encodeURIComponent(`Hello Ash Vapor! I want to order: ${product.name} (PKR ${(Number(product.price) || 0).toLocaleString()})`)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition-all"

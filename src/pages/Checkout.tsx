@@ -29,14 +29,28 @@ export default function Checkout() {
   const { toast } = useToast();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setUser(session.user);
-        setEmail(session.user.email || "");
-        setName(session.user.user_metadata?.full_name || "");
-      }
+    const timer = setTimeout(() => {
       setCheckingAuth(false);
-    });
+    }, 1200);
+
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        if (session) {
+          setUser(session.user);
+          setEmail(session.user.email || "");
+          setName(session.user.user_metadata?.full_name || "");
+        }
+      })
+      .catch((e) => {
+        console.warn("Auth check error:", e);
+      })
+      .finally(() => {
+        clearTimeout(timer);
+        setCheckingAuth(false);
+      });
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -316,7 +330,16 @@ export default function Checkout() {
     );
   }
 
-  if (checkingAuth) return null;
+  if (checkingAuth) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center bg-white text-black">
+        <div className="flex flex-col items-center gap-3">
+          <Flame className="h-8 w-8 text-red-600 animate-pulse" />
+          <p className="text-sm font-semibold text-black">Preparing checkout...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8 md:py-12 bg-white text-black">

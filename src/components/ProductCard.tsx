@@ -21,8 +21,9 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
   const navigate = useNavigate();
 
   const handleAdd = () => {
-    addItem({ id, name, price, image_url: image_url || null, sku });
-    toast({ title: "Added to Cart", description: `${name} (PKR ${price.toLocaleString()})` });
+    const numericPrice = Number(price) || 0;
+    addItem({ id, name, price: numericPrice, image_url: image_url || null, sku });
+    toast({ title: "Added to Cart", description: `${name} (PKR ${numericPrice.toLocaleString()})` });
   };
 
   const handleBuyNow = () => {
@@ -83,7 +84,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
               <div>
                 <span className="text-xs font-bold text-zinc-400 mr-1">PKR</span>
                 <span className="text-base sm:text-lg font-black text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.35)]">
-                  {price.toLocaleString()}
+                  {(Number(price) || 0).toLocaleString()}
                 </span>
               </div>
               {stock > 0 ? (
@@ -181,7 +182,7 @@ export default function ProductCard({ id, name, price, sku, image_url, stock, ca
             <div>
               <span className="text-xs font-bold text-gray-700 mr-1">PKR</span>
               <span className="text-base sm:text-lg font-black text-black">
-                {price.toLocaleString()}
+                {(Number(price) || 0).toLocaleString()}
               </span>
             </div>
             {stock > 0 ? (

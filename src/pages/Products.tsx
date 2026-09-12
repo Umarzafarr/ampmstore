@@ -49,7 +49,16 @@ export default function Products() {
     );
   }, [categories, rawCat]);
 
-  const activeCatId = matchedCategory ? matchedCategory.id : (rawCat === "all" ? "all" : rawCat);
+  const activeCatId = matchedCategory ? matchedCategory.id : (rawCat || "all");
+
+  const [sortBy, setSortBy] = useState<string>("featured");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 36;
+
+  // Reset page when filter/search/sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCatId, searchQuery, sortBy]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -69,6 +78,24 @@ export default function Products() {
       return matchCat && matchSearch;
     });
   }, [products, activeCatId, rawCat, searchQuery]);
+
+  const sortedProducts = useMemo(() => {
+    const list = [...filteredProducts];
+    if (sortBy === "price-asc") {
+      list.sort((a, b) => a.price - b.price);
+    } else if (sortBy === "price-desc") {
+      list.sort((a, b) => b.price - a.price);
+    } else if (sortBy === "name-asc") {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return list;
+  }, [filteredProducts, sortBy]);
+
+  const totalPages = Math.ceil(sortedProducts.length / pageSize);
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return sortedProducts.slice(start, start + pageSize);
+  }, [sortedProducts, currentPage, pageSize]);
 
   const handleSelectCategory = (catId: string) => {
     const nextParams = new URLSearchParams(searchParams);
@@ -155,10 +182,10 @@ export default function Products() {
           )}
         </div>
 
-        {/* Category Dropdown */}
-        <div className="flex items-center gap-3">
+        {/* Category & Sort Dropdowns */}
+        <div className="flex flex-wrap items-center gap-3">
           <Select value={activeCatId} onValueChange={handleSelectCategory}>
-            <SelectTrigger className="w-full sm:w-[220px] h-10 text-xs sm:text-sm bg-white border-gray-300 text-black font-semibold">
+            <SelectTrigger className="w-full sm:w-[200px] h-10 text-xs sm:text-sm bg-white border-gray-300 text-black font-semibold">
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent className="bg-white border-gray-200 text-black">
@@ -173,19 +200,36 @@ export default function Products() {
               })}
             </SelectContent>
           </Select>
+
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-full sm:w-[170px] h-10 text-xs sm:text-sm bg-white border-gray-300 text-black font-semibold">
+              <SelectValue placeholder="Sort By" />
+            </SelectTrigger>
+            <SelectContent className="bg-white border-gray-200 text-black">
+              <SelectItem value="featured">Featured / Newest</SelectItem>
+              <SelectItem value="price-asc">Price: Low to High</SelectItem>
+              <SelectItem value="price-desc">Price: High to Low</SelectItem>
+              <SelectItem value="name-asc">Name: A to Z</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       {/* Results Status Bar */}
       <div className="flex items-center justify-between mb-6 text-xs text-gray-700 font-medium">
         <span>
-          Showing <strong className="text-black">{filteredProducts.length}</strong> products
+          Showing <strong className="text-black">{sortedProducts.length > 0 ? (currentPage - 1) * pageSize + 1 : 0}</strong>-
+          <strong className="text-black">{Math.min(currentPage * pageSize, sortedProducts.length)}</strong> of{" "}
+          <strong className="text-black">{sortedProducts.length.toLocaleString()}</strong> products
           {matchedCategory ? ` in ${matchedCategory.name}` : ""}
           {searchQuery ? ` matching "${searchQuery}"` : ""}
         </span>
-        {(activeCatId !== "all" || searchQuery) && (
+        {(activeCatId !== "all" || searchQuery || sortBy !== "featured") && (
           <button
-            onClick={handleClearFilters}
+            onClick={() => {
+              setSortBy("featured");
+              handleClearFilters();
+            }}
             className="text-red-600 hover:underline font-bold flex items-center gap-1"
           >
             <X className="h-3 w-3" /> Reset all filters
@@ -194,7 +238,7 @@ export default function Products() {
       </div>
 
       {/* Products Grid */}
-      {filteredProducts.length === 0 ? (
+      {sortedProducts.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-3xl border border-gray-200 max-w-md mx-auto p-8 space-y-4 shadow-sm">
           <div className="h-16 w-16 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto text-red-600">
             <Sparkles className="h-8 w-8" />
@@ -232,11 +276,85 @@ export default function Products() {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-          {filteredProducts.map((p) => (
-            <ProductCard key={p.id} {...p} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+            {paginatedProducts.map((p) => (
+              <ProductCard key={p.id} {...p} />
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="mt-12 pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className="text-xs text-gray-600 font-medium">
+                Page <strong className="text-black">{currentPage}</strong> of{" "}
+                <strong className="text-black">{totalPages}</strong> ({sortedProducts.length.toLocaleString()} items total)
+              </p>
+
+              <div className="flex flex-wrap items-center justify-center gap-1.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === 1}
+                  onClick={() => {
+                    setCurrentPage((p) => Math.max(1, p - 1));
+                    window.scrollTo({ top: 150, behavior: "smooth" });
+                  }}
+                  className="text-xs font-bold border-gray-300 text-black hover:bg-gray-100"
+                >
+                  Previous
+                </Button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
+                  .reduce<(number | string)[]>((acc, p, idx, arr) => {
+                    if (idx > 0 && p - (arr[idx - 1] as number) > 1) {
+                      acc.push("...");
+                    }
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((item, idx) =>
+                    item === "..." ? (
+                      <span key={`dots-${idx}`} className="px-2 text-xs text-gray-400 font-bold">
+                        ...
+                      </span>
+                    ) : (
+                      <Button
+                        key={item}
+                        size="sm"
+                        variant={currentPage === item ? "default" : "outline"}
+                        onClick={() => {
+                          setCurrentPage(Number(item));
+                          window.scrollTo({ top: 150, behavior: "smooth" });
+                        }}
+                        className={`text-xs min-w-[34px] font-bold ${
+                          currentPage === item
+                            ? "bg-red-600 text-white hover:bg-red-700"
+                            : "border-gray-300 text-black hover:bg-gray-100"
+                        }`}
+                      >
+                        {item}
+                      </Button>
+                    )
+                  )}
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === totalPages}
+                  onClick={() => {
+                    setCurrentPage((p) => Math.min(totalPages, p + 1));
+                    window.scrollTo({ top: 150, behavior: "smooth" });
+                  }}
+                  className="text-xs font-bold border-gray-300 text-black hover:bg-gray-100"
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

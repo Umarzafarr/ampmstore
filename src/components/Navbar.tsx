@@ -159,6 +159,15 @@ export default function Navbar() {
             <ChevronDown className={`h-3.5 w-3.5 ${isLanding ? "text-white/50" : "text-gray-500"}`} />
           </Link>
           <Link
+            to="/products?cat=Coils"
+            className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
+              isLanding ? "text-white/80 hover:text-yellow-400" : "text-black hover:text-red-600"
+            }`}
+          >
+            <span>Coils &amp; Pods</span>
+            <ChevronDown className={`h-3.5 w-3.5 ${isLanding ? "text-white/50" : "text-gray-500"}`} />
+          </Link>
+          <Link
             to="/orders"
             className={`inline-flex items-center gap-1 text-xs font-bold tracking-widest uppercase transition-colors ${
               isLanding ? "text-white/80 hover:text-yellow-400" : "text-black hover:text-red-600"
@@ -298,6 +307,15 @@ export default function Navbar() {
             onClick={() => setMenuOpen(false)}
           >
             Disposables
+          </Link>
+          <Link
+            to="/products?cat=Coils"
+            className={`block text-sm font-bold uppercase tracking-wider py-2 border-b ${
+              isLanding ? "border-neutral-900 hover:text-red-500" : "border-gray-100 hover:text-red-600"
+            }`}
+            onClick={() => setMenuOpen(false)}
+          >
+            Coils &amp; Pods
           </Link>
           <Link
             to="/orders"

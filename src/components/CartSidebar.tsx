@@ -72,7 +72,7 @@ export default function CartSidebar() {
                     <div>
                       <p className="text-xs font-bold text-black truncate">{item.name}</p>
                       <p className="text-xs font-black text-red-600 mt-0.5">
-                        PKR {item.price.toLocaleString()}
+                        PKR {(Number(item.price) || 0).toLocaleString()}
                       </p>
                     </div>
 
@@ -120,7 +120,7 @@ export default function CartSidebar() {
                 </div>
                 <div className="flex justify-between text-base font-bold text-black pt-1 border-t border-gray-200">
                   <span>Subtotal</span>
-                  <span className="text-red-600 text-lg font-black">PKR {total().toLocaleString()}</span>
+                  <span className="text-red-600 text-lg font-black">PKR {(Number(total()) || 0).toLocaleString()}</span>
                 </div>
               </div>
 
