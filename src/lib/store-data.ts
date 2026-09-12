@@ -366,19 +366,36 @@ export async function deleteCategory(id: string): Promise<void> {
 
 // ---------------- Orders ----------------
 export async function getOrders(): Promise<Order[]> {
+  const localOrders = loadLocal<Order[]>(KEY_ORDERS, INITIAL_ORDERS);
   try {
     const { data, error } = await supabase
       .from("orders")
       .select("*, order_items(*)")
       .order("created_at", { ascending: false });
     if (!error && data) {
-      saveLocal(KEY_ORDERS, data);
-      return data as Order[];
+      // Merge Supabase database orders (authoritative) with any local-only pending orders
+      const orderMap = new Map<string, Order>();
+      for (const o of data as Order[]) {
+        orderMap.set(o.id, o);
+      }
+      for (const loc of localOrders) {
+        if (!orderMap.has(loc.id)) {
+          orderMap.set(loc.id, loc);
+        }
+      }
+      const merged = Array.from(orderMap.values()).sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      saveLocal(KEY_ORDERS, merged);
+      return merged;
+    }
+    if (error) {
+      console.warn("DB getOrders error:", error);
     }
   } catch (e) {
     console.warn("DB getOrders error:", e);
   }
-  return loadLocal<Order[]>(KEY_ORDERS, INITIAL_ORDERS);
+  return localOrders;
 }
 
 export async function addOrder(orderData: Omit<Order, "id" | "created_at">): Promise<Order> {
@@ -402,19 +419,35 @@ export async function addOrder(orderData: Omit<Order, "id" | "created_at">): Pro
 
     if (!orderErr && order) {
       if (orderData.order_items && orderData.order_items.length > 0) {
+        const isUUID = (val: any) =>
+          typeof val === "string" &&
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
+
         const itemsPayload = orderData.order_items.map((it) => ({
           order_id: order.id,
-          product_id: it.product_id || null,
+          product_id: isUUID(it.product_id) ? it.product_id : null,
           product_name: it.product_name,
           quantity: it.quantity,
           price: it.price,
         }));
-        await supabase.from("order_items").insert(itemsPayload);
+
+        try {
+          const { error: itemsErr } = await supabase.from("order_items").insert(itemsPayload);
+          if (itemsErr) {
+            console.warn("Item insert failed, retrying with null product_id:", itemsErr);
+            const fallbackPayload = itemsPayload.map((it) => ({ ...it, product_id: null }));
+            await supabase.from("order_items").insert(fallbackPayload);
+          }
+        } catch (itemErr) {
+          console.warn("Item insert exception:", itemErr);
+        }
       }
       createdOrder = {
         ...order,
         order_items: orderData.order_items,
       } as Order;
+    } else if (orderErr) {
+      console.error("Supabase order insert error:", orderErr);
     }
   } catch (e) {
     console.warn("DB addOrder error:", e);

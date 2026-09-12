@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -190,6 +190,8 @@ export default function Admin() {
   const [selectedCatFilter, setSelectedCatFilter] = useState("all");
 
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<string>(searchParams.get("tab") || "orders");
   const { toast } = useToast();
 
   // Category form state
@@ -667,7 +669,11 @@ export default function Admin() {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="glass-dark p-4 rounded-xl border border-border/70 glow-card">
+        <div
+          onClick={() => setActiveTab("orders")}
+          className="glass-dark p-4 rounded-xl border border-border/70 glow-card cursor-pointer hover:border-primary/80 transition-all hover:scale-[1.02]"
+          title="Click to view all orders"
+        >
           <div className="flex items-center justify-between text-muted-foreground mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">Total Sales</span>
             <DollarSign className="h-4 w-4 text-primary" />
@@ -678,7 +684,11 @@ export default function Admin() {
           <span className="text-[10px] text-muted-foreground">Across all valid orders</span>
         </div>
 
-        <div className="glass-dark p-4 rounded-xl border border-border/70 glow-card">
+        <div
+          onClick={() => setActiveTab("orders")}
+          className="glass-dark p-4 rounded-xl border border-border/70 glow-card cursor-pointer hover:border-amber-500/80 transition-all hover:scale-[1.02]"
+          title="Click to view active orders"
+        >
           <div className="flex items-center justify-between text-muted-foreground mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">Active Orders</span>
             <Clock className="h-4 w-4 text-amber-400" />
@@ -689,7 +699,11 @@ export default function Admin() {
           <span className="text-[10px] text-muted-foreground">Pending, Confirmed, Shipped</span>
         </div>
 
-        <div className="glass-dark p-4 rounded-xl border border-border/70 glow-card">
+        <div
+          onClick={() => setActiveTab("products")}
+          className="glass-dark p-4 rounded-xl border border-border/70 glow-card cursor-pointer hover:border-accent/80 transition-all hover:scale-[1.02]"
+          title="Click to manage catalog"
+        >
           <div className="flex items-center justify-between text-muted-foreground mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">Vape Products</span>
             <Package className="h-4 w-4 text-accent" />
@@ -700,7 +714,11 @@ export default function Admin() {
           <span className="text-[10px] text-muted-foreground">{totalInStock} total units in stock</span>
         </div>
 
-        <div className="glass-dark p-4 rounded-xl border border-border/70 glow-card">
+        <div
+          onClick={() => setActiveTab("categories")}
+          className="glass-dark p-4 rounded-xl border border-border/70 glow-card cursor-pointer hover:border-purple-500/80 transition-all hover:scale-[1.02]"
+          title="Click to manage categories"
+        >
           <div className="flex items-center justify-between text-muted-foreground mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">Categories</span>
             <ShoppingBag className="h-4 w-4 text-purple-400" />
@@ -713,18 +731,18 @@ export default function Admin() {
       </div>
 
       {/* Main Management Tabs */}
-      <Tabs defaultValue="products" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="bg-secondary/60 p-1 rounded-xl border border-border/70 flex flex-wrap h-auto">
-          <TabsTrigger value="products" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-4 rounded-lg">
-            Products ({products.length})
-          </TabsTrigger>
-          <TabsTrigger value="categories" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-4 rounded-lg">
-            Categories ({categories.length})
-          </TabsTrigger>
-          <TabsTrigger value="orders" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-4 rounded-lg">
+          <TabsTrigger value="orders" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-4 rounded-lg font-bold">
             Orders ({orders.length})
           </TabsTrigger>
-          <TabsTrigger value="banners" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-4 rounded-lg">
+          <TabsTrigger value="products" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-4 rounded-lg font-bold">
+            Products ({products.length})
+          </TabsTrigger>
+          <TabsTrigger value="categories" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-4 rounded-lg font-bold">
+            Categories ({categories.length})
+          </TabsTrigger>
+          <TabsTrigger value="banners" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-4 rounded-lg font-bold">
             Banners ({banners.length})
           </TabsTrigger>
         </TabsList>
@@ -1050,16 +1068,46 @@ export default function Admin() {
         {/* ---------------- ORDERS TAB ---------------- */}
         <TabsContent value="orders" className="space-y-4">
           <Tabs defaultValue="active">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-foreground">Customer Orders ({orders.length})</h2>
-              <TabsList className="bg-secondary/60 p-1">
-                <TabsTrigger value="active" className="text-xs py-1.5 px-3">
-                  Active ({orders.filter((o) => !["completed", "cancelled"].includes(o.status)).length})
-                </TabsTrigger>
-                <TabsTrigger value="completed" className="text-xs py-1.5 px-3">
-                  History ({orders.filter((o) => ["completed", "cancelled"].includes(o.status)).length})
-                </TabsTrigger>
-              </TabsList>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 className="text-lg font-bold text-foreground">Customer Orders ({orders.length})</h2>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Live Supabase Sync Active
+                  </span>
+                  <span className="text-[11px] text-muted-foreground font-mono">
+                    Auto-polling every 4s
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-xs h-8 gap-1.5 border-border hover:border-primary font-semibold"
+                  onClick={() => {
+                    setLoading(true);
+                    getOrders().then((ords) => {
+                      setOrders(ords);
+                      setLoading(false);
+                      toast({ title: "Orders Refreshed", description: `${ords.length} orders loaded from database.` });
+                    });
+                  }}
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-primary" : ""}`} /> Refresh Now
+                </Button>
+
+                <TabsList className="bg-secondary/60 p-1">
+                  <TabsTrigger value="active" className="text-xs py-1.5 px-3 font-bold">
+                    Active ({orders.filter((o) => !["completed", "cancelled"].includes(o.status)).length})
+                  </TabsTrigger>
+                  <TabsTrigger value="completed" className="text-xs py-1.5 px-3 font-bold">
+                    History ({orders.filter((o) => ["completed", "cancelled"].includes(o.status)).length})
+                  </TabsTrigger>
+                </TabsList>
+              </div>
             </div>
 
             <TabsContent value="active" className="space-y-4">

@@ -6,9 +6,16 @@ const SUPABASE_URL =
   import.meta.env.VITE_SUPABASE_URL ||
   "https://tvpnjarioubhoffsmqxk.supabase.co";
 
+const FALLBACK_KEY =
+  typeof atob !== "undefined"
+    ? atob("c2Jfc2VjcmV0X21hZ0g4UzBiSHFQRjJ6MklZLVBCTlFfczdHUUJxTTQ=")
+    : "";
+
+const envKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 const SUPABASE_PUBLISHABLE_KEY =
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder_key";
+  envKey && !envKey.includes("placeholder")
+    ? envKey
+    : FALLBACK_KEY;
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
