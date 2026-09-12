@@ -122,26 +122,12 @@ export default function Checkout() {
         total_amount: total(),
         status: "pending",
         payment_method: paymentMethod,
-        payment_screenshot_url: screenshotUrl,
+        payment_screenshot_url: screenshotUrl || null,
         order_items: orderItems,
       });
 
-      // Background attempt to invoke Supabase Edge functions if available
+      // Background attempt to invoke email notification if configured
       try {
-        if (!user) {
-          await supabase.functions.invoke("place-guest-order", {
-            body: {
-              customerName: name,
-              customerEmail: email,
-              customerPhone: phone,
-              address,
-              paymentMethod,
-              paymentScreenshotUrl: screenshotUrl,
-              items: items.map((i) => ({ id: i.id, name: i.name, quantity: i.quantity, price: i.price, sku: i.sku })),
-              totalAmount: total(),
-            },
-          });
-        }
         await supabase.functions.invoke("send-order-email", {
           body: {
             orderId: createdOrder.id,
@@ -156,7 +142,7 @@ export default function Checkout() {
           },
         });
       } catch {
-        // silent fallback
+        // non-blocking email notification
       }
 
       setOrderSuccess({

@@ -117,12 +117,36 @@ CREATE POLICY "Anyone can view orders" ON public.orders FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Anyone can update orders" ON public.orders;
 CREATE POLICY "Anyone can update orders" ON public.orders FOR UPDATE USING (true);
 
+DROP POLICY IF EXISTS "Anyone can delete orders" ON public.orders;
+CREATE POLICY "Anyone can delete orders" ON public.orders FOR DELETE USING (true);
+
 -- Order Items
 DROP POLICY IF EXISTS "Anyone can insert order items" ON public.order_items;
 CREATE POLICY "Anyone can insert order items" ON public.order_items FOR INSERT WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Anyone can view order items" ON public.order_items;
 CREATE POLICY "Anyone can view order items" ON public.order_items FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Anyone can update order items" ON public.order_items;
+CREATE POLICY "Anyone can update order items" ON public.order_items FOR UPDATE USING (true);
+
+DROP POLICY IF EXISTS "Anyone can delete order items" ON public.order_items;
+CREATE POLICY "Anyone can delete order items" ON public.order_items FOR DELETE USING (true);
+
+-- Enable Supabase Realtime for orders and items
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+EXCEPTION WHEN duplicate_object THEN
+  NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.order_items;
+EXCEPTION WHEN duplicate_object THEN
+  NULL;
+END $$;
 
 -- Banners
 DROP POLICY IF EXISTS "Public can view banners" ON public.banners;

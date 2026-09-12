@@ -405,13 +405,14 @@ export async function addOrder(orderData: Omit<Order, "id" | "created_at">): Pro
     const { data: order, error: orderErr } = await supabase
       .from("orders")
       .insert({
+        user_id: orderData.user_id || null,
         customer_name: orderData.customer_name,
         customer_email: orderData.customer_email,
-        phone_number: orderData.phone_number,
+        phone_number: orderData.phone_number || null,
         shipping_address: orderData.shipping_address,
         total_amount: orderData.total_amount,
         payment_method: orderData.payment_method,
-        payment_screenshot_url: orderData.payment_screenshot_url,
+        payment_screenshot_url: orderData.payment_screenshot_url || null,
         status: orderData.status,
       })
       .select()
