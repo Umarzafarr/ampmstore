@@ -242,12 +242,12 @@ export default function Checkout() {
           {/* WhatsApp Direct Dispatch Button */}
           <div className="space-y-3 pt-2">
             <a
-              href={`https://wa.me/923104703131?text=${whatsappMsg}`}
+              href={`https://wa.me/923217877789?text=${whatsappMsg}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all"
             >
-              💬 Confirm via WhatsApp (03104703131)
+              💬 Confirm via WhatsApp (03217877789)
             </a>
             <p className="text-[11px] text-gray-600 font-medium">
               Send your order to our packaging department for express same-day dispatch.
@@ -469,7 +469,7 @@ export default function Checkout() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 font-medium">Account / Mobile #:</span>
-                    <span className="font-mono font-bold text-red-600">03104703131</span>
+                    <span className="font-mono font-bold text-red-600">03217877789</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 font-medium">Account Title:</span>

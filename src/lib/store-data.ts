@@ -431,6 +431,11 @@ export async function addOrder(orderData: Omit<Order, "id" | "created_at">): Pro
   const orders = loadLocal<Order[]>(KEY_ORDERS, INITIAL_ORDERS);
   orders.unshift(createdOrder);
   saveLocal(KEY_ORDERS, orders);
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("ampm_orders_updated", { detail: createdOrder }));
+  }
+
   return createdOrder;
 }
 
@@ -444,6 +449,27 @@ export async function updateOrderStatus(id: string, status: Order["status"]): Pr
   const orders = loadLocal<Order[]>(KEY_ORDERS, INITIAL_ORDERS);
   const updated = orders.map((o) => (o.id === id ? { ...o, status } : o));
   saveLocal(KEY_ORDERS, updated);
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("ampm_orders_updated"));
+  }
+}
+
+export async function deleteOrder(id: string): Promise<void> {
+  try {
+    await supabase.from("order_items").delete().eq("order_id", id);
+    await supabase.from("orders").delete().eq("id", id);
+  } catch (e) {
+    console.warn("DB deleteOrder error:", e);
+  }
+
+  const orders = loadLocal<Order[]>(KEY_ORDERS, INITIAL_ORDERS);
+  const updated = orders.filter((o) => o.id !== id);
+  saveLocal(KEY_ORDERS, updated);
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("ampm_orders_updated"));
+  }
 }
 
 // ---------------- Banners ----------------

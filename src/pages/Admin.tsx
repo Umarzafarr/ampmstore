@@ -19,7 +19,7 @@ import {
   Product, Category, Order, Banner,
   getProducts, saveProduct, deleteProduct as removeProduct,
   getCategories, addCategory as insertCategory, updateCategory as modifyCategory, deleteCategory as removeCategory,
-  getOrders, updateOrderStatus as changeOrderStatus,
+  getOrders, updateOrderStatus as changeOrderStatus, deleteOrder as removeOrderAction,
   getBanners, saveBanner as updateBanner, deleteBanner as removeBanner, toggleBannerActive,
   isAdminLoggedIn, setAdminLoggedIn, verifyAdminCredentials
 } from "@/lib/store-data";
@@ -29,10 +29,12 @@ function OrderCard({
   order,
   updateOrderStatus,
   showRestore,
+  deleteOrder,
 }: {
   order: Order;
   updateOrderStatus: (id: string, status: Order["status"]) => void;
   showRestore?: boolean;
+  deleteOrder?: (id: string) => void;
 }) {
   const [screenshotOpen, setScreenshotOpen] = useState(false);
 
@@ -126,33 +128,46 @@ function OrderCard({
       </div>
 
       {/* Status Action Buttons */}
-      <div className="border-t border-border/60 pt-3 flex flex-wrap gap-2">
-        {!showRestore ? (
-          <>
-            {order.status !== "confirmed" && (
-              <Button size="sm" variant="outline" className="text-xs h-8 border-purple-500/40 hover:bg-purple-500/20 text-purple-300" onClick={() => updateOrderStatus(order.id, "confirmed")}>
-                Confirm Order
-              </Button>
-            )}
-            {order.status !== "shipped" && (
-              <Button size="sm" variant="outline" className="text-xs h-8 border-cyan-500/40 hover:bg-cyan-500/20 text-cyan-300" onClick={() => updateOrderStatus(order.id, "shipped")}>
-                Mark Shipped
-              </Button>
-            )}
-            {order.status !== "completed" && (
-              <Button size="sm" className="text-xs h-8 bg-emerald-600 hover:bg-emerald-500 text-white" onClick={() => updateOrderStatus(order.id, "completed")}>
-                Mark Completed
-              </Button>
-            )}
-            {order.status !== "cancelled" && (
-              <Button size="sm" variant="destructive" className="text-xs h-8" onClick={() => updateOrderStatus(order.id, "cancelled")}>
-                Cancel
-              </Button>
-            )}
-          </>
-        ) : (
-          <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => updateOrderStatus(order.id, "pending")}>
-            <RefreshCw className="h-3 w-3 mr-1" /> Restore to Active
+      <div className="border-t border-border/60 pt-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
+          {!showRestore ? (
+            <>
+              {order.status !== "confirmed" && (
+                <Button size="sm" variant="outline" className="text-xs h-8 border-purple-500/60 hover:bg-purple-500/20 text-purple-300 font-bold" onClick={() => updateOrderStatus(order.id, "confirmed")}>
+                  <CheckCircle2 className="h-3.5 w-3.5 mr-1 text-purple-400" /> Confirm Order
+                </Button>
+              )}
+              {order.status !== "shipped" && (
+                <Button size="sm" variant="outline" className="text-xs h-8 border-cyan-500/40 hover:bg-cyan-500/20 text-cyan-300 font-bold" onClick={() => updateOrderStatus(order.id, "shipped")}>
+                  Mark Shipped
+                </Button>
+              )}
+              {order.status !== "completed" && (
+                <Button size="sm" className="text-xs h-8 bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-sm" onClick={() => updateOrderStatus(order.id, "completed")}>
+                  <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Mark Completed
+                </Button>
+              )}
+              {order.status !== "cancelled" && (
+                <Button size="sm" variant="outline" className="text-xs h-8 border-amber-500/40 hover:bg-amber-500/20 text-amber-300 font-medium" onClick={() => updateOrderStatus(order.id, "cancelled")}>
+                  Cancel
+                </Button>
+              )}
+            </>
+          ) : (
+            <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => updateOrderStatus(order.id, "pending")}>
+              <RefreshCw className="h-3 w-3 mr-1" /> Restore to Active
+            </Button>
+          )}
+        </div>
+
+        {deleteOrder && (
+          <Button
+            size="sm"
+            variant="destructive"
+            className="text-xs h-8 bg-red-600/90 hover:bg-red-700 text-white font-bold ml-auto shadow-sm"
+            onClick={() => deleteOrder(order.id)}
+          >
+            <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete Order
           </Button>
         )}
       </div>
@@ -225,6 +240,44 @@ export default function Admin() {
   useEffect(() => {
     if (isAdmin) {
       loadData();
+
+      // 1. Supabase real-time channel for instant DB order notifications
+      const channel = supabase
+        .channel("admin-orders-live-stream")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "orders" },
+          () => {
+            getOrders().then((ords) => setOrders(ords));
+          }
+        )
+        .subscribe();
+
+      // 2. Custom window event for same-browser instant order updates
+      const handleLocalOrderUpdate = () => {
+        getOrders().then((ords) => setOrders(ords));
+      };
+      window.addEventListener("ampm_orders_updated", handleLocalOrderUpdate);
+
+      // 3. Storage event for cross-tab updates
+      const handleStorage = (e: StorageEvent) => {
+        if (e.key === "ampm_live_orders_v2") {
+          getOrders().then((ords) => setOrders(ords));
+        }
+      };
+      window.addEventListener("storage", handleStorage);
+
+      // 4. Polling fallback every 4 seconds for reliable dynamic updates
+      const pollTimer = setInterval(() => {
+        getOrders().then((ords) => setOrders(ords));
+      }, 4000);
+
+      return () => {
+        supabase.removeChannel(channel);
+        window.removeEventListener("ampm_orders_updated", handleLocalOrderUpdate);
+        window.removeEventListener("storage", handleStorage);
+        clearInterval(pollTimer);
+      };
     }
   }, [isAdmin]);
 
@@ -451,11 +504,19 @@ export default function Admin() {
     loadData();
   };
 
-  // ---------------- Order status handler ----------------
+  // ---------------- Order status and delete handlers ----------------
   const handleUpdateOrderStatus = async (orderId: string, status: Order["status"]) => {
+    // Optimistically update UI immediately
+    setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
     await changeOrderStatus(orderId, status);
     toast({ title: `Order updated to ${status.toUpperCase()}` });
-    loadData();
+  };
+
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!window.confirm(`Are you sure you want to permanently delete Order #${orderId.slice(0, 8)}?`)) return;
+    setOrders((prev) => prev.filter((o) => o.id !== orderId));
+    await removeOrderAction(orderId);
+    toast({ title: `Order #${orderId.slice(0, 8)} permanently deleted` });
   };
 
   // Filtered products list
@@ -1012,7 +1073,12 @@ export default function Admin() {
                 orders
                   .filter((o) => !["completed", "cancelled"].includes(o.status))
                   .map((order) => (
-                    <OrderCard key={order.id} order={order} updateOrderStatus={handleUpdateOrderStatus} />
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      updateOrderStatus={handleUpdateOrderStatus}
+                      deleteOrder={handleDeleteOrder}
+                    />
                   ))
               )}
             </TabsContent>
@@ -1026,7 +1092,13 @@ export default function Admin() {
                 orders
                   .filter((o) => ["completed", "cancelled"].includes(o.status))
                   .map((order) => (
-                    <OrderCard key={order.id} order={order} updateOrderStatus={handleUpdateOrderStatus} showRestore />
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      updateOrderStatus={handleUpdateOrderStatus}
+                      deleteOrder={handleDeleteOrder}
+                      showRestore
+                    />
                   ))
               )}
             </TabsContent>

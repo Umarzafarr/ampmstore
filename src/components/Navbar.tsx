@@ -98,12 +98,12 @@ export default function Navbar() {
       {!isLanding && (
         <div className="bg-black text-white py-2 px-4 text-center text-xs sm:text-sm font-medium">
           <a
-            href="https://wa.me/923104703131"
+            href="https://wa.me/923217877789"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1.5 hover:underline transition-all text-white"
           >
-            <span>Order Online or Call or WhatsApp Us at 03104703131</span>
+            <span>Order Online or Call or WhatsApp Us at 03217877789</span>
             <span className="font-bold text-sm">→</span>
           </a>
         </div>

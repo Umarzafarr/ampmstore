@@ -232,12 +232,12 @@ export default function ProductDetail() {
             {/* WhatsApp Quick Order for this product */}
             <div>
               <a
-                href={`https://wa.me/923104703131?text=${encodeURIComponent(`Hello Ash Vapor! I want to order: ${product.name} (PKR ${(Number(product.price) || 0).toLocaleString()})`)}`}
+                href={`https://wa.me/923217877789?text=${encodeURIComponent(`Hello Ash Vapor! I want to order: ${product.name} (PKR ${(Number(product.price) || 0).toLocaleString()})`)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition-all"
               >
-                <MessageCircle className="h-4 w-4" /> Order this item on WhatsApp (03104703131)
+                <MessageCircle className="h-4 w-4" /> Order this item on WhatsApp (03217877789)
               </a>
             </div>
 

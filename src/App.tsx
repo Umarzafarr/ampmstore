@@ -14,8 +14,18 @@ import Admin from "./pages/Admin";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import { useLocation } from "react-router-dom";
 
 const queryClient = new QueryClient();
+
+function FloatingWhatsAppWrapper() {
+  const location = useLocation();
+  if (location.pathname.startsWith("/admin") || location.pathname.startsWith("/manager")) {
+    return null;
+  }
+  return <FloatingWhatsApp phoneNumber="923217877789" defaultMessage="Hello Ash Vapor! I want to order vape products." />;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -26,6 +36,7 @@ const App = () => (
         <ErrorBoundary>
           <Navbar />
           <CartSidebar />
+          <FloatingWhatsAppWrapper />
           <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/products" element={<Products />} />

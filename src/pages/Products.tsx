@@ -266,11 +266,11 @@ export default function Products() {
               className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold w-full sm:w-auto shadow-sm"
             >
               <a
-                href="https://wa.me/923104703131?text=Hello%20Ash%20Vapor!%20Do%20you%20have%20stock%20for%20this?"
+                href="https://wa.me/923217877789?text=Hello%20Ash%20Vapor!%20Do%20you%20have%20stock%20for%20this?"
                 target="_blank"
                 rel="noreferrer"
               >
-                <MessageCircle className="h-3.5 w-3.5 mr-1" /> WhatsApp Us (03104703131)
+                <MessageCircle className="h-3.5 w-3.5 mr-1" /> WhatsApp Us (03217877789)
               </a>
             </Button>
           </div>
