@@ -365,21 +365,41 @@ export async function deleteCategory(id: string): Promise<void> {
 }
 
 // ---------------- Orders ----------------
+export let lastDbError: string | null = null;
+export let lastDbSyncTime: Date | null = null;
+
 export async function getOrders(): Promise<Order[]> {
   const localOrders = loadLocal<Order[]>(KEY_ORDERS, INITIAL_ORDERS);
   try {
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from("orders")
       .select("*, order_items(*)")
       .order("created_at", { ascending: false });
+
+    // Fallback: if foreign key join has any issue, fetch orders directly
+    if (error) {
+      console.warn("Retrying orders fetch without join:", error);
+      const plainRes = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (!plainRes.error && plainRes.data) {
+        data = plainRes.data.map((o) => ({ ...o, order_items: [] }));
+        error = null;
+      }
+    }
+
     if (!error && data) {
-      // Merge Supabase database orders (authoritative) with any local-only pending orders
+      lastDbError = null;
+      lastDbSyncTime = new Date();
+      // Supabase database orders (authoritative)
       const orderMap = new Map<string, Order>();
       for (const o of data as Order[]) {
         orderMap.set(o.id, o);
       }
+      // Only keep offline-created orders (ord- prefix) that haven't synced yet
       for (const loc of localOrders) {
-        if (!orderMap.has(loc.id)) {
+        if (loc.id.startsWith("ord-") && !orderMap.has(loc.id)) {
           orderMap.set(loc.id, loc);
         }
       }
@@ -390,16 +410,19 @@ export async function getOrders(): Promise<Order[]> {
       return merged;
     }
     if (error) {
+      lastDbError = error.message || JSON.stringify(error);
       console.warn("DB getOrders error:", error);
     }
-  } catch (e) {
-    console.warn("DB getOrders error:", e);
+  } catch (e: any) {
+    lastDbError = e?.message || String(e);
+    console.warn("DB getOrders exception:", e);
   }
   return localOrders;
 }
 
 export async function addOrder(orderData: Omit<Order, "id" | "created_at">): Promise<Order> {
   let createdOrder: Order | null = null;
+  let insertError: any = null;
 
   try {
     const { data: order, error: orderErr } = await supabase
@@ -445,12 +468,14 @@ export async function addOrder(orderData: Omit<Order, "id" | "created_at">): Pro
       }
       createdOrder = {
         ...order,
-        order_items: orderData.order_items,
+        order_items: orderData.order_items || [],
       } as Order;
     } else if (orderErr) {
+      insertError = orderErr;
       console.error("Supabase order insert error:", orderErr);
     }
-  } catch (e) {
+  } catch (e: any) {
+    insertError = e;
     console.warn("DB addOrder error:", e);
   }
 
@@ -459,7 +484,11 @@ export async function addOrder(orderData: Omit<Order, "id" | "created_at">): Pro
       ...orderData,
       id: `ord-${crypto.randomUUID().slice(0, 8)}`,
       created_at: new Date().toISOString(),
+      order_items: orderData.order_items || [],
     };
+    if (insertError) {
+      (createdOrder as any)._syncError = insertError?.message || String(insertError);
+    }
   }
 
   const orders = loadLocal<Order[]>(KEY_ORDERS, INITIAL_ORDERS);

@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Trash2, Pencil, Plus, Upload, Image, Shield, DollarSign,
   Package, ShoppingBag, Eye, LogOut, ArrowLeft, Search, CheckCircle2,
-  Clock, AlertTriangle, ExternalLink, RefreshCw
+  Clock, AlertTriangle, ExternalLink, RefreshCw, Zap
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -19,9 +19,9 @@ import {
   Product, Category, Order, Banner,
   getProducts, saveProduct, deleteProduct as removeProduct,
   getCategories, addCategory as insertCategory, updateCategory as modifyCategory, deleteCategory as removeCategory,
-  getOrders, updateOrderStatus as changeOrderStatus, deleteOrder as removeOrderAction,
+  getOrders, addOrder, updateOrderStatus as changeOrderStatus, deleteOrder as removeOrderAction,
   getBanners, saveBanner as updateBanner, deleteBanner as removeBanner, toggleBannerActive,
-  isAdminLoggedIn, setAdminLoggedIn, verifyAdminCredentials
+  isAdminLoggedIn, setAdminLoggedIn, verifyAdminCredentials, lastDbError, lastDbSyncTime
 } from "@/lib/store-data";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -42,7 +42,7 @@ function OrderCard({
     <div className="rounded-xl border border-border/80 bg-card/70 backdrop-blur-md p-5 space-y-3 glow-card">
       <div className="flex flex-wrap justify-between items-start gap-2">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="font-display font-bold text-foreground text-base">#{order.id.slice(0, 8)}</span>
             <Badge variant="outline" className="border-border text-xs font-semibold">
               {order.payment_method === "online" ? "Online Transfer" : "Cash on Delivery"}
@@ -62,7 +62,21 @@ function OrderCard({
             >
               {order.status.toUpperCase()}
             </Badge>
+            {order.id.startsWith("ord-") ? (
+              <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/40 font-semibold" title="Saved locally on this device">
+                <AlertTriangle className="h-3 w-3" /> Local Storage
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 font-semibold" title="Live Supabase Cloud Record">
+                <CheckCircle2 className="h-3 w-3" /> Supabase Cloud
+              </span>
+            )}
           </div>
+          {(order as any)._syncError && (
+            <p className="text-[11px] text-destructive bg-destructive/10 px-2 py-1 rounded mt-1">
+              ⚠️ Database write error: {(order as any)._syncError}
+            </p>
+          )}
           <p className="text-sm font-medium text-foreground mt-1">
             {order.customer_name} • <span className="text-muted-foreground">{order.customer_email}</span> • <span className="text-primary">{order.phone_number || "No phone"}</span>
           </p>
@@ -219,23 +233,80 @@ export default function Admin() {
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [bannerDialogOpen, setBannerDialogOpen] = useState(false);
 
+  const [testingOrder, setTestingOrder] = useState(false);
+
   const loadData = async () => {
     setLoading(true);
+    // 1. Immediately fetch orders so active orders appear without delay
+    getOrders()
+      .then((ords) => {
+        setOrders(ords);
+      })
+      .catch(console.error);
+
+    // 2. Fetch products, categories, banners concurrently
     try {
-      const [cats, prods, ords, bnrs] = await Promise.all([
+      const [cats, prods, bnrs] = await Promise.all([
         getCategories(),
         getProducts(),
-        getOrders(),
         getBanners(),
       ]);
       setCategories(cats);
       setProducts(prods);
-      setOrders(ords);
       setBanners(bnrs);
     } catch (e) {
-      console.error("Load data error:", e);
+      console.error("Catalog load error:", e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateTestOrder = async () => {
+    setTestingOrder(true);
+    try {
+      const newOrder = await addOrder({
+        user_id: null,
+        customer_name: `Live Test Order #${Math.floor(1000 + Math.random() * 9000)}`,
+        customer_email: "manager.test@ashvapor.pk",
+        phone_number: "03217877789",
+        shipping_address: "Manager Portal Live Test Check",
+        total_amount: 3200,
+        status: "pending",
+        payment_method: "cod",
+        payment_screenshot_url: null,
+        order_items: [
+          {
+            id: `item-${Date.now()}`,
+            product_name: "Verification Vape Pod Kit",
+            quantity: 1,
+            price: 3200,
+          },
+        ],
+      });
+
+      const all = await getOrders();
+      setOrders(all);
+
+      if (newOrder.id.startsWith("ord-")) {
+        toast({
+          title: "⚠️ Order Saved Locally Only",
+          description: `Database write issue: ${(newOrder as any)._syncError || "Check network/Supabase RLS policies"}.`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "✅ Order Stored in Supabase Cloud!",
+          description: `Order #${newOrder.id.slice(0, 8)} recorded and appearing live.`,
+        });
+      }
+    } catch (err: any) {
+      toast({
+        title: "Test Order Error",
+        description: err.message,
+        variant: "destructive",
+      });
+    } finally {
+      setTestingOrder(false);
     }
   };
 
@@ -1067,6 +1138,20 @@ export default function Admin() {
 
         {/* ---------------- ORDERS TAB ---------------- */}
         <TabsContent value="orders" className="space-y-4">
+          {lastDbError && (
+            <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-3.5 text-xs text-destructive flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 shrink-0" />
+                <span>
+                  <strong>Cloud Sync Notice:</strong> {lastDbError} (Showing cached records).
+                </span>
+              </div>
+              <Button size="sm" variant="outline" className="h-7 text-[11px] border-destructive/50 text-destructive hover:bg-destructive/20" onClick={() => loadData()}>
+                Retry Connection
+              </Button>
+            </div>
+          )}
+
           <Tabs defaultValue="active">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
@@ -1082,7 +1167,18 @@ export default function Admin() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  size="sm"
+                  className="text-xs h-8 gap-1.5 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-bold shadow-sm"
+                  disabled={testingOrder}
+                  onClick={handleCreateTestOrder}
+                  title="Generate a test order directly to Supabase to verify live database reception"
+                >
+                  <Zap className={`h-3.5 w-3.5 ${testingOrder ? "animate-spin" : ""}`} />
+                  {testingOrder ? "Testing DB..." : "⚡ Send Live Test Order"}
+                </Button>
+
                 <Button
                   size="sm"
                   variant="outline"
