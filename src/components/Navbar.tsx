@@ -112,11 +112,11 @@ export default function Navbar() {
       <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-8">
         {/* Brand Logo - Neon Sign */}
         <Link to="/" className="flex items-center gap-2 shrink-0 group">
-          <div className={!isLanding ? "bg-black/95 px-3 py-1 rounded-xl shadow-sm border border-zinc-800 flex items-center" : "flex items-center"}>
+          <div className={!isLanding ? "bg-black/95 px-3 py-1.5 rounded-xl shadow-sm border border-zinc-800 flex items-center" : "flex items-center"}>
             <img
               src="/logo-badge.png"
               alt="Ash Vapers"
-              className="h-11 sm:h-13 md:h-14 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+              className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
             />
           </div>
         </Link>

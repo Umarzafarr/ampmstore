@@ -111,7 +111,7 @@ export default function Index() {
             <img
               src="/logo-neon.png"
               alt="Ash Vapers"
-              className="h-56 sm:h-68 md:h-76 lg:h-84 w-auto object-contain drop-shadow-[0_0_35px_rgba(255,20,50,0.45)] drop-shadow-[0_0_70px_rgba(250,204,21,0.3)] transition-transform duration-500 hover:scale-105"
+              className="h-64 sm:h-80 md:h-96 lg:h-[420px] max-w-[92vw] w-auto object-contain drop-shadow-[0_0_40px_rgba(255,20,50,0.5)] drop-shadow-[0_0_80px_rgba(250,204,21,0.35)] transition-transform duration-500 hover:scale-105"
             />
           </div>
 
