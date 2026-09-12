@@ -107,19 +107,16 @@ export default function Index() {
 
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-7">
           {/* Main Brand Logo - New Deep Radiant Red Neon Sign Logo */}
-          <div className="flex justify-center mb-3">
+          <div className="flex justify-center mb-2">
             <img
               src="/logo-neon.png"
               alt="Ash Vapers"
-              className="h-52 sm:h-64 md:h-72 lg:h-80 w-auto object-contain drop-shadow-[0_0_35px_rgba(255,20,50,0.5)] drop-shadow-[0_0_70px_rgba(250,204,21,0.35)] transition-transform duration-500 hover:scale-105"
+              className="h-56 sm:h-68 md:h-76 lg:h-84 w-auto object-contain drop-shadow-[0_0_35px_rgba(255,20,50,0.45)] drop-shadow-[0_0_70px_rgba(250,204,21,0.3)] transition-transform duration-500 hover:scale-105"
             />
           </div>
 
           {/* Refined Sleek Typography */}
           <div className="space-y-2">
-            <span className="text-red-500 block text-base sm:text-lg md:text-xl font-black uppercase tracking-[0.25em] font-display drop-shadow-[0_0_20px_rgba(239,68,68,0.7)] drop-shadow-[0_0_40px_rgba(220,38,38,0.4)]">
-              LIFE IS TOO SHORT
-            </span>
             <h1 className="text-white block text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight leading-tight font-display drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
               FOR BLAND &amp; BORING
             </h1>

@@ -185,11 +185,13 @@ export default function Checkout() {
       <div className="container mx-auto px-4 py-16 max-w-lg bg-white text-black">
         <div className="bg-white rounded-3xl border border-gray-200 p-6 sm:p-8 text-center space-y-5 shadow-lg">
           <div className="flex justify-center">
-            <img
-              src="/logo-transparent.png"
-              alt="Ash Vapor Logo"
-              className="h-16 sm:h-20 w-auto object-contain"
-            />
+            <div className="bg-black/95 px-5 py-2.5 rounded-2xl border border-zinc-800 shadow-md inline-flex items-center justify-center">
+              <img
+                src="/logo-badge.png"
+                alt="Ash Vapers Logo"
+                className="h-14 sm:h-16 w-auto object-contain"
+              />
+            </div>
           </div>
           <div className="h-14 w-14 rounded-2xl bg-emerald-50 border border-emerald-200 mx-auto flex items-center justify-center text-emerald-600">
             <CheckCircle2 className="h-8 w-8" />

@@ -495,11 +495,13 @@ export default function Admin() {
         <div className="w-full max-w-md glass-dark p-8 rounded-2xl border border-border/80 shadow-2xl space-y-6 relative z-10 glow-card">
           <div className="text-center space-y-3">
             <div className="flex justify-center">
-              <img
-                src="/logo-transparent.png"
-                alt="Ash Vapor Logo"
-                className="h-20 sm:h-24 w-auto object-contain"
-              />
+              <div className="bg-black/95 px-5 py-2.5 rounded-2xl border border-zinc-800 shadow-md inline-flex items-center justify-center">
+                <img
+                  src="/logo-badge.png"
+                  alt="Ash Vapers Logo"
+                  className="h-16 sm:h-20 w-auto object-contain"
+                />
+              </div>
             </div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold">
               <Shield className="h-3.5 w-3.5 text-red-600" /> MANAGER PORTAL
@@ -569,11 +571,13 @@ export default function Admin() {
       {/* Top Bar Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-border/60">
         <div className="flex items-center gap-4">
-          <img
-            src="/logo-transparent.png"
-            alt="Ash Vapor Logo"
-            className="h-14 w-auto object-contain"
-          />
+          <div className="bg-black/95 px-3 py-1.5 rounded-xl border border-zinc-800 shadow-sm flex items-center">
+            <img
+              src="/logo-badge.png"
+              alt="Ash Vapers Logo"
+              className="h-11 w-auto object-contain"
+            />
+          </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10px] font-bold uppercase tracking-widest text-red-600 px-2 py-0.5 rounded bg-red-50 border border-red-200">Store Control Center</span>
